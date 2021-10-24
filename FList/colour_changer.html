@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<script src="https://unpkg.com/@grammarly/textarea@latest"></script>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Colour Changer</title>
+</head>
+<body>
+
+<p id="info">If you click on 'Colorize!', the text will be f-chat formatted!</p>
+
+<h2>Rainbow Text!</h2>
+
+<label for="input">Input Text:</label><br>
+<input type="text" id="input" name="input" value="Test"><br>
+<label for="output">Formatted Text:</label><br>
+<label id="output"></label><br><br>
+<button onclick="colorize()">Colorize!</button>
+
+
+
+
+<h2>Dialogue Colouring</h2>
+<label for="input">Colour:</label><input type="text" id="colour" name="colour" value="orange"><br>
+<textarea id="textarea" name="textarea" rows="10" cols="100"></textarea><br>
+<button onclick="colorizeDialogue()">Colorize!</button><br>
+<label id="dialogueOutput"></label><br><br>
+
+
+<script>
+    function colorize() {
+      const arr = Array.from(document.getElementById("input").value);
+      const col = ["red", "orange", "yellow", "green", "cyan", "blue", "purple"];
+      let out = "";
+      for (let i = 0; i < arr.length; i++)
+        out += `[color=${col[i % col.length]}]${arr[i]}[/color]`;
+
+      navigator.clipboard.writeText(out).then(function() {
+        document.getElementById("info").innerHTML = "<b>Output successfully copied to clipboard!</b>";
+        console.log('Async: Copying to clipboard was successful!');
+      }, function(err) {
+        document.getElementById("info").innerHTML = "<b>Copy to clipboard failed!</b>";
+        console.error('Async: Could not copy text: ', err);
+      });  
+
+      document.getElementById("output").innerHTML = out;
+      selectText("output");
+    }
+
+    function selectText(node) {
+        node = document.getElementById(node);
+
+        if (document.body.createTextRange) {
+            const range = document.body.createTextRange();
+            range.moveToElementText(node);
+            range.select();
+        } else if (window.getSelection) {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else {
+            console.warn("Could not select text in node: Unsupported browser.");
+        }
+    }
+
+    function colorizeDialogue(){
+        let str = document.getElementById("textarea").value;
+        let out = "";
+        let col = document.getElementById("colour").value;
+        let start = 0, newBegin = 0;
+        for(let i = 0; i<str.length; i++)
+        {
+            if(str[i] == '"') {
+                if(start == 0) {
+                    out += str.substr(newBegin, i - newBegin) +  `[color=${col}]`;
+                    newBegin = i;
+                    start = 1;
+                }
+                else {
+                    out += str.substr(newBegin, i - newBegin + 1) +  `[/color]`;
+                    newBegin = i + 1;
+                    start = 0;
+                }
+            }
+        }
+        out += str.substr(newBegin);
+
+        
+
+        let tmpout = out.replace(/(?:\r\n|\r|\n)/g, '<br>');
+        document.getElementById("dialogueOutput").innerHTML = tmpout;
+        selectText("dialogueOutput");
+
+        navigator.clipboard.writeText(out).then(function() {
+            document.getElementById("info").innerHTML = "<b>Output successfully copied to clipboard!</b>";
+            console.log('Async: Copying to clipboard was successful!');
+        }, function(err) {
+            document.getElementById("info").innerHTML = "<b>Used Copy Command - couldn't verify success!</b>";
+            document.execCommand("copy");
+        });
+
+
+        
+    }
+</script>
+</body>
+</html>
+
