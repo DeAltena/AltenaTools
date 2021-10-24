@@ -1,5 +1,4 @@
 initCollapsibles();
-document.getElementById("endtag").disabled = true;
 
 function colorizeDialogue(){
     let str = document.getElementById("textarea").value,
@@ -14,7 +13,7 @@ function colorizeDialogue(){
         sub = document.getElementById("sub").checked,
         sup = document.getElementById("super").checked,
         startTag = document.getElementById("starttag").value,
-        endTag = (document.getElementById("diftag").checked) ? startTag : document.getElementById("endtag").value;
+        endTag = document.getElementById("endtag").value;
 
     for(let i = 0; i < str.length; i++)
     {
@@ -88,5 +87,5 @@ function colorizeDialogue(){
     selectText("dialogueOutput");
 
     copyToClipboard(out);
-    document.getElementById("info").innerHTML = "Output successfully copied to clipboard!";
+    document.getElementById("result").innerHTML = "Output successfully copied to clipboard!";
 }

@@ -50,6 +50,10 @@ function isBlank(str) {
     return (!str || /^\s*$/.test(str));
 }
 
-function disableTextbox(textboxID, checkboxID){
-    document.getElementById(textboxID).disabled = document.getElementById(checkboxID).checked;
+function enableOnChecked(id, checkbox){
+    document.getElementById(id).disabled = checkbox.checked;
+}
+
+function disableOnChecked(id, checkbox){
+    document.getElementById(id).disabled = !checkbox.checked;
 }
