@@ -11,11 +11,9 @@
         <h1>Dialogue Colouring</h1>
         <p class="italic" id="info">If you click on 'Colorize!', the text will be f-chat formatted for the dialogue!</p>
 
-        <label for="input">Colour:</label><input type="text" id="colour" name="colour" value="orange">
+        <label for="input">Colour: </label><input type="text" id="colour" name="colour" value="orange">
         <input type="checkbox" id="bold" title="Emboldens the Dialogue">Bold</input>
-        <input type="checkbox" id="italic" title="Italizises the Dialogue">Italic</input>
-        <input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</input>
-        <input type="checkbox" id="strikethrough" title="Strikes through the Dialogue">Strikethrough</input>     
+        <input type="checkbox" id="italic" title="Italizises the Dialogue">Italic</input>     
         <input type="checkbox" id="rainbow" title="Colours the Dialogue in a Rainbow Colour Scheme - overrides colour">Rainbow</input>
         <input type="checkbox" id="sub" title="Puts the Dialogue in subscript">Subscript</input>
         <input type="checkbox" id="super" title="Puts the Dialogue in subscript">Superscript</input><br>
@@ -25,9 +23,11 @@
         <br/><br/>
         <button type="button" class="collapsible">Advanced Options</button>
         <div class="content">
-            <label for="starttag">Starting Tag:</label><input type="text" id="starttag" name="starttag" value='"'><br/>
+            <label for="starttag">Starting Tag: </label><input type="text" id="starttag" name="starttag" value='"'><br/>
             <input type="checkbox" id="diftag" title="Uncheck if Ending Tag should be different from Starting Tag" checked=true onclick="disableTextbox('endtag', 'diftag')">Same Ending Tag</input><br/>
-            <label for="endtag">Ending Tag:</label><input type="text" id="endtag" name="endtag" value='"'><br/>
+            <label for="endtag">Ending Tag: </label><input type="text" id="endtag" name="endtag" value='"'><br/>
+            <input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</input><br />
+            <input type="checkbox" id="strikethrough" title="Strikes through the Dialogue">Strikethrough</input>
         </div>
     </body>
     
