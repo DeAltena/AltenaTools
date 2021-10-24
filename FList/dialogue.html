@@ -12,7 +12,20 @@
         <p id="info">If you click on 'Colorize!', the text will be f-chat formatted for the dialogue!<br />Per Default, the effect is only applied onto dialogue between two " marks. This can be changed under 'Advanced Options'.</p>
         <p class="italic" id="result"></p>
 
-        <label for="input">Colour: </label><input type="text" id="colour" name="colour" value="orange">
+        <select name="colour" id="colours">
+            <option value="red">Red</option>
+            <option value="orange">Orange</option>
+            <option value="yellow">Yellow</option>
+            <option value="green">Green</option>
+            <option value="cyan">Cyan</option>
+            <option value="blue">Blue</option>
+            <option value="purple">Purple</option>
+            <option value="pink">Pink</option>
+            <option value="black">Black</option>
+            <option value="brown">Brown</option>
+            <option value="white">White</option>
+            <option value="gray">Gray</option>
+        </select>
         <input type="checkbox" id="bold" title="Emboldens the Dialogue">Bold</input>
         <input type="checkbox" id="italic" title="Italizises the Dialogue">Italic</input>     
         <input type="checkbox" id="rainbow" title="Colours the Dialogue in a Rainbow Colour Scheme - overrides colour">Rainbow</input>

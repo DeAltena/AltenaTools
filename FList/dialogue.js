@@ -49,7 +49,7 @@ function colorizeDialogue(){
         endTag = document.getElementById("endtag").value,
         wholeText = document.getElementById("tags").checked;
 
-    col = document.getElementById("colour").value;
+    col = document.getElementById("colours").value;
     bold = document.getElementById("bold").checked;
     italic = document.getElementById("italic").checked;
     underline = document.getElementById("underline").checked;
