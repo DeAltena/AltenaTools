@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<script src="..\Util\text_util.js"></script>
+<script src="flist_util.js"></script>
+<html>
+    <head>
+        <link rel="stylesheet" href="..\Util\default.css">
+        <meta charset="utf-8">
+        <title>Rainbow Text</title>
+    </head>
+    <body>
+        <h1>Rainbow Text</h1>
+        <p class="italic" id="info">If you click on 'Colorize!', the text will be f-chat formatted to be Rainbow-coloured!</p>
+
+        <label class="bold" for="input">Input Text:</label><br>
+        <input type="text" id="input" name="input" value="Test"><br>
+        <label class="bold" for="output">Formatted Text:</label><br>
+        <label id="output"></label><br><br>
+        <button onclick="colorize()">Colorize!</button>
+
+        <script>
+            function colorize() {
+                const str = document.getElementById("input").value;
+                let out = rainbowText(str);
+
+                copyToClipboard(out);
+                document.getElementById("info").innerHTML = "Output successfully copied to clipboard!";
+
+                let tmpout = replaceLinebreaks(out)
+                document.getElementById("output").innerHTML = tmpout;
+                selectText("output");
+            }
+        </script>
+    </body>
+</html>
+
