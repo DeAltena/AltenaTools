@@ -12,14 +12,23 @@
         <p class="italic" id="info">If you click on 'Colorize!', the text will be f-chat formatted for the dialogue!</p>
 
         <label for="input">Colour:</label><input type="text" id="colour" name="colour" value="orange">
-        <input type="checkbox" id="bold">Bold</input>
-        <input type="checkbox" id="italic">Italic</input>
-        <input type="checkbox" id="underline">Underline</input>
-        <input type="checkbox" id="strikethrough">Strikethrough</input>
-        <input type="checkbox" id="rainbow">Rainbow</input><br>
+        <input type="checkbox" id="bold" title="Emboldens the Dialogue">Bold</input>
+        <input type="checkbox" id="italic" title="Italizises the Dialogue">Italic</input>
+        <input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</input>
+        <input type="checkbox" id="strikethrough" title="Strikes through the Dialogue">Strikethrough</input>     
+        <input type="checkbox" id="rainbow" title="Colours the Dialogue in a Rainbow Colour Scheme - overrides colour">Rainbow</input>
+        <input type="checkbox" id="sub" title="Puts the Dialogue in subscript">Subscript</input>
+        <input type="checkbox" id="super" title="Puts the Dialogue in subscript">Superscript</input><br>
         <textarea id="textarea" name="textarea" rows="10" cols="100"></textarea><br>
         <button onclick="colorizeDialogue()">Colorize!</button><br>
         <label id="dialogueOutput"></label>
+        <br/><br/>
+        <button type="button" class="collapsible">Advanced Options</button>
+        <div class="content">
+            <label for="starttag">Starting Tag:</label><input type="text" id="starttag" name="starttag" value='"'><br/>
+            <input type="checkbox" id="diftag" title="Uncheck if Ending Tag should be different from Starting Tag" checked=true onclick="disableTextbox('endtag', 'diftag')">Same Ending Tag</input><br/>
+            <label for="endtag">Ending Tag:</label><input type="text" id="endtag" name="endtag" value='"'><br/>
+        </div>
     </body>
     
     <footer>
@@ -29,6 +38,9 @@
     </footer>
 
     <script>
+        initCollapsibles();
+        document.getElementById("endtag").disabled = true;
+
         function colorizeDialogue(){
             let str = document.getElementById("textarea").value,
                 col = document.getElementById("colour").value,
@@ -38,48 +50,59 @@
                 underline = document.getElementById("underline").checked,
                 strikethrough = document.getElementById("strikethrough").checked,
                 coloured = !isBlank(col),
-                rainbow = document.getElementById("rainbow").checked;
+                rainbow = document.getElementById("rainbow").checked,
+                sub = document.getElementById("sub").checked,
+                sup = document.getElementById("super").checked,
+                startTag = document.getElementById("starttag").value,
+                endTag = (document.getElementById("diftag").checked) ? startTag : document.getElementById("endtag").value;
 
             for(let i = 0; i < str.length; i++)
             {
-                if(str[i] == '"') {
-                    if(start == 0) {
-                        out += str.substr(newBegin, i - newBegin);
-                        if(coloured && !rainbow)
-                            out += `[color=${col}]`;
-                        if(bold)
-                            out += `[b]`;
-                        if(italic)
-                            out += `[i]`;
-                        if(underline)
-                            out += `[u]`;
-                        if(strikethrough)
-                            out += `[s]`;
+                if(str[i] == startTag && start == 0) {
+                    out += str.substr(newBegin, i - newBegin);
+                    if(coloured && !rainbow)
+                        out += `[color=${col}]`;
+                    if(bold)
+                        out += `[b]`;
+                    if(italic)
+                        out += `[i]`;
+                    if(underline)
+                        out += `[u]`;
+                    if(strikethrough)
+                        out += `[s]`;
+                    if(sub)
+                        out += `[sub]`;
+                    if(sup)
+                        out += `[sup]`;
 
-                        newBegin = i;
-                        start = 1;
-                    }
-                    else {
-                        if(rainbow)
-                            out += rainbowText(str.substr(newBegin, i - newBegin + 1));
-                        else
-                            out += str.substr(newBegin, i - newBegin + 1);
-
-                        if(strikethrough)
-                            out += `[/s]`;
-                        if(underline)
-                            out += `[/u]`;
-                        if(italic)
-                            out += `[/i]`;
-                        if(bold)
-                            out += `[/b]`;
-                        if(coloured && !rainbow)
-                            out += `[/color]`;
-
-                        newBegin = i + 1;
-                        start = 0;  
-                    }
+                    newBegin = i;
+                    start = 1;
                 }
+                else if(str[i] == endTag && start != 0) {
+                    if(rainbow)
+                        out += rainbowText(str.substr(newBegin, i - newBegin + 1));
+                    else
+                        out += str.substr(newBegin, i - newBegin + 1);
+
+                    if(sup)
+                        out += `[/sup]`;
+                    if(sub)
+                        out += `[/sub]`;
+                    if(strikethrough)
+                        out += `[/s]`;
+                    if(underline)
+                        out += `[/u]`;
+                    if(italic)
+                        out += `[/i]`;
+                    if(bold)
+                        out += `[/b]`;
+                    if(coloured && !rainbow)
+                        out += `[/color]`;
+
+                    newBegin = i + 1;
+                    start = 0;  
+                }
+                
             }
             if(rainbow && start != 0)
                 out += rainbowText(str.substr(newBegin));
