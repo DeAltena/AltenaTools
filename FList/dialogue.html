@@ -20,87 +20,94 @@
         <textarea id="textarea" name="textarea" rows="10" cols="100"></textarea><br>
         <button onclick="colorizeDialogue()">Colorize!</button><br>
         <label id="dialogueOutput"></label>
+    </body>
+    
+    <footer>
+        <form action="../index.html" class="footer">
+            <input type="submit" value="Return to Overview" />
+        </form>
+    </footer>
 
-        <script>
-            function colorizeDialogue(){
-                let str = document.getElementById("textarea").value,
-                    col = document.getElementById("colour").value,
-                    start = 0, newBegin = 0, out = "",
-                    bold = document.getElementById("bold").checked,
-                    italic = document.getElementById("italic").checked,
-                    underline = document.getElementById("underline").checked,
-                    strikethrough = document.getElementById("strikethrough").checked,
-                    coloured = !isBlank(col),
-                    rainbow = document.getElementById("rainbow").checked;
+    <script>
+        function colorizeDialogue(){
+            let str = document.getElementById("textarea").value,
+                col = document.getElementById("colour").value,
+                start = 0, newBegin = 0, out = "",
+                bold = document.getElementById("bold").checked,
+                italic = document.getElementById("italic").checked,
+                underline = document.getElementById("underline").checked,
+                strikethrough = document.getElementById("strikethrough").checked,
+                coloured = !isBlank(col),
+                rainbow = document.getElementById("rainbow").checked;
 
-                for(let i = 0; i < str.length; i++)
-                {
-                    if(str[i] == '"') {
-                        if(start == 0) {
-                            out += str.substr(newBegin, i - newBegin);
-                            if(coloured && !rainbow)
-                                out += `[color=${col}]`;
-                            if(bold)
-                                out += `[b]`;
-                            if(italic)
-                                out += `[i]`;
-                            if(underline)
-                                out += `[u]`;
-                            if(strikethrough)
-                                out += `[s]`;
+            for(let i = 0; i < str.length; i++)
+            {
+                if(str[i] == '"') {
+                    if(start == 0) {
+                        out += str.substr(newBegin, i - newBegin);
+                        if(coloured && !rainbow)
+                            out += `[color=${col}]`;
+                        if(bold)
+                            out += `[b]`;
+                        if(italic)
+                            out += `[i]`;
+                        if(underline)
+                            out += `[u]`;
+                        if(strikethrough)
+                            out += `[s]`;
 
-                            newBegin = i;
-                            start = 1;
-                        }
-                        else {
-                            if(rainbow)
-                                out += rainbowText(str.substr(newBegin, i - newBegin + 1));
-                            else
-                                out += str.substr(newBegin, i - newBegin + 1);
+                        newBegin = i;
+                        start = 1;
+                    }
+                    else {
+                        if(rainbow)
+                            out += rainbowText(str.substr(newBegin, i - newBegin + 1));
+                        else
+                            out += str.substr(newBegin, i - newBegin + 1);
 
-                            if(strikethrough)
-                                out += `[/s]`;
-                            if(underline)
-                                out += `[/u]`;
-                            if(italic)
-                                out += `[/i]`;
-                            if(bold)
-                                out += `[/b]`;
-                            if(coloured && !rainbow)
-                                out += `[/color]`;
+                        if(strikethrough)
+                            out += `[/s]`;
+                        if(underline)
+                            out += `[/u]`;
+                        if(italic)
+                            out += `[/i]`;
+                        if(bold)
+                            out += `[/b]`;
+                        if(coloured && !rainbow)
+                            out += `[/color]`;
 
-                            newBegin = i + 1;
-                            start = 0;  
-                        }
+                        newBegin = i + 1;
+                        start = 0;  
                     }
                 }
-                if(rainbow && start != 0)
-                    out += rainbowText(str.substr(newBegin));
-                else
-                    out += str.substr(newBegin);
-
-                //if a closing " is missing, close it at the end.
-                if(start != 0){
-                    if(strikethrough)
-                        out += `[/s]`;
-                    if(underline)
-                        out += `[/u]`;
-                    if(italic)
-                        out += `[/i]`;
-                    if(bold)
-                        out += `[/b]`;
-                    if(coloured && !rainbow)
-                        out += `[/color]`;
-                }
-
-                let tmpout = replaceLinebreaks(out)
-                document.getElementById("dialogueOutput").innerHTML = tmpout;
-                selectText("dialogueOutput");
-
-                copyToClipboard(out);
-                document.getElementById("info").innerHTML = "Output successfully copied to clipboard!";
             }
-        </script>
-    </body>
+            if(rainbow && start != 0)
+                out += rainbowText(str.substr(newBegin));
+            else
+                out += str.substr(newBegin);
+
+            //if a closing " is missing, close it at the end.
+            if(start != 0){
+                if(strikethrough)
+                    out += `[/s]`;
+                if(underline)
+                    out += `[/u]`;
+                if(italic)
+                    out += `[/i]`;
+                if(bold)
+                    out += `[/b]`;
+                if(coloured && !rainbow)
+                    out += `[/color]`;
+            }
+
+            let tmpout = replaceLinebreaks(out)
+            document.getElementById("dialogueOutput").innerHTML = tmpout;
+            selectText("dialogueOutput");
+
+            copyToClipboard(out);
+            document.getElementById("info").innerHTML = "Output successfully copied to clipboard!";
+        }
+    </script>
+    
 </html>
 

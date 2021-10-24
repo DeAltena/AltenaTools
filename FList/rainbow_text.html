@@ -16,20 +16,26 @@
         <label class="bold" for="output">Formatted Text:</label><br>
         <label id="output"></label><br><br>
         <button onclick="colorize()">Colorize!</button>
-
-        <script>
-            function colorize() {
-                const str = document.getElementById("input").value;
-                let out = rainbowText(str);
-
-                copyToClipboard(out);
-                document.getElementById("info").innerHTML = "Output successfully copied to clipboard!";
-
-                let tmpout = replaceLinebreaks(out)
-                document.getElementById("output").innerHTML = tmpout;
-                selectText("output");
-            }
-        </script>
     </body>
+    <footer>
+        <form action="../index.html" class="footer">
+            <input type="submit" value="Return to Overview" />
+        </form>
+    </footer>
+
+    <script>
+        function colorize() {
+            const str = document.getElementById("input").value;
+            let out = rainbowText(str);
+
+            copyToClipboard(out);
+            document.getElementById("info").innerHTML = "Output successfully copied to clipboard!";
+
+            let tmpout = replaceLinebreaks(out)
+            document.getElementById("output").innerHTML = tmpout;
+            selectText("output");
+        }
+    </script>
+    
 </html>
 
