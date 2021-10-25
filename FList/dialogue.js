@@ -1,4 +1,5 @@
 initCollapsibles();
+document.addEventListener('keydown', onKeyPress)
 
 let col, bold, italic, underline, strikethrough, coloured, rainbow, sub, sup;
 
@@ -104,4 +105,9 @@ function colorizeDialogue(){
 
     copyToClipboard(out);
     document.getElementById("result").innerHTML = "Output successfully copied to clipboard!";
+}
+
+function onKeyPress(e){
+    if((e.altKey || e.ctrlKey) && e.keyCode == 13)
+        colorizeDialogue();
 }

@@ -9,7 +9,9 @@
     </head>
     <body>
         <h1>Dialogue Colouring</h1>
-        <p id="info">If you click on 'Colorize!', the text will be f-chat formatted for the dialogue!<br />Per Default, the effect is only applied onto dialogue between two " marks. This can be changed under 'Advanced Options'.</p>
+        <p id="info">If you click on 'Colorize!', the text will be f-chat formatted for the dialogue!<br />
+            Per Default, the effect is only applied onto dialogue between two " marks. This can be changed under 'Advanced Options'.
+            Alt+Enter or Ctrl+Enter can be used instead of clicking the button!</p>
         <p class="italic" id="result"></p>
 
         <select name="colour" id="colours">
@@ -29,15 +31,15 @@
         <input type="checkbox" id="bold" title="Emboldens the Dialogue">Bold</input>
         <input type="checkbox" id="italic" title="Italizises the Dialogue">Italic</input>     
         <input type="checkbox" id="rainbow" title="Colours the Dialogue in a Rainbow Colour Scheme - overrides colour">Rainbow</input>
-        <input type="checkbox" id="sub" title="Puts the Dialogue in subscript">Subscript</input>
-        <input type="checkbox" id="super" title="Puts the Dialogue in subscript">Superscript</input><br>
+        <input type="checkbox" id="sub" title="Puts the Dialogue in subscript" onclick="document.getElementById('super').checked = false">Subscript</input>
+        <input type="checkbox" id="super" title="Puts the Dialogue in subscript" onclick="document.getElementById('sub').checked = false">Superscript</input><br>
         <textarea id="textarea" name="textarea" rows="10" cols="100"></textarea><br>
         <button onclick="colorizeDialogue()">Colorize!</button><br>
         <label id="dialogueOutput"></label>
         <br/><br/>
         <button type="button" class="collapsible">Advanced Options</button>
         <div class="content">
-            <input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="enableOnChecked('endtag', this);enableOnChecked('starttag', this)">Effect entire text</input><br/>
+            <input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this)">Effect entire text</input><br/>
             <label for="starttag">Starting Tag: </label><input type="text" id="starttag" name="starttag" value='"'><br/>
             <label for="endtag">Ending Tag: </label><input type="text" id="endtag" name="endtag" value='"'><br/>
             <input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</input><br />

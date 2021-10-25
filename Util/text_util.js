@@ -50,10 +50,10 @@ function isBlank(str) {
     return (!str || /^\s*$/.test(str));
 }
 
-function enableOnChecked(id, checkbox){
+function disableOnChecked(id, checkbox){
     document.getElementById(id).disabled = checkbox.checked;
 }
 
-function disableOnChecked(id, checkbox){
+function enableOnChecked(id, checkbox){
     document.getElementById(id).disabled = !checkbox.checked;
 }
