@@ -3,67 +3,69 @@
 <script src="flist_util.js"></script>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" /> 
         <link rel="stylesheet" href="..\Util\default.css">
         <meta charset="utf-8">
         <title>Dialogue</title>
     </head>
     <body>
-        <h1>Dialogue Colouring</h1>
-        <p id="info">If you click on 'Colorize!', the text will be f-chat formatted for the dialogue!<br />
-            Per Default, the effect is only applied onto dialogue between two " marks. This can be changed under 'Advanced Options'.</p>
-        <button type="button" class="collapsible">Shortcuts</button>
-        <div class="content">
-            <span class="bold">Colorize:</span> alt/ctrl + Enter <br />
-            <span class="bold">Bold:</span> alt/ctrl + b <br />
-            <span class="bold">Italic:</span> alt/ctrl + i <br />
-            <span class="bold">Rainbow:</span> alt/ctrl + g <br />
-            <span class="bold">Superscript:</span> alt/ctrl + u <br />
-            <span class="bold">Subscript:</span> alt/ctrl + l <br />
-        </div>
+        <div class="page-wrap">
+            <h1>Dialogue Colouring</h1>
+            <p id="info">If you click on 'Colorize!', the text will be f-chat formatted for the dialogue!<br />
+                Per Default, the effect is only applied onto dialogue between two " marks. This can be changed under 'Advanced Options'.</p>
+            <button type="button" class="collapsible">Shortcuts</button>
+            <div class="content">
+                <span class="bold">Colorize:</span> alt/ctrl + Enter <br />
+                <span class="bold">Bold:</span> alt/ctrl + b <br />
+                <span class="bold">Italic:</span> alt/ctrl + i <br />
+                <span class="bold">Rainbow:</span> alt/ctrl + g <br />
+                <span class="bold">Superscript:</span> alt/ctrl + u <br />
+                <span class="bold">Subscript:</span> alt/ctrl + l <br />
+            </div>
+                
             
-        
-        <p class="italic" id="result"></p>
+            <p class="italic" id="result"></p>
 
-        <select name="colour" id="colours">
-            <option value="red">Red</option>
-            <option value="orange">Orange</option>
-            <option value="yellow">Yellow</option>
-            <option value="green">Green</option>
-            <option value="cyan">Cyan</option>
-            <option value="blue">Blue</option>
-            <option value="purple">Purple</option>
-            <option value="pink">Pink</option>
-            <option value="black">Black</option>
-            <option value="brown">Brown</option>
-            <option value="white">White</option>
-            <option value="gray">Gray</option>
-        </select>
-        <input type="checkbox" id="bold" title="ctrl/alt + b">Bold</input>
-        <input type="checkbox" id="italic" title="ctrl/alt + i">Italic</input>     
-        <input type="checkbox" id="rainbow" title="alt + r - overrides colour">Rainbow</input>
-        <input type="checkbox" id="sub" onclick="document.getElementById('super').checked = false">Subscript</input>
-        <input type="checkbox" id="super" onclick="document.getElementById('sub').checked = false">Superscript</input><br>
-        <textarea id="textarea" name="textarea" rows="10" cols="100"></textarea><br>
-        <button onclick="colorizeDialogue()">Colorize!</button><br>
-        <label id="dialogueOutput"></label>
-        <br/><br/>
-        <button type="button" class="collapsible">Advanced Options</button>
-        <div class="content">
-            <input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this)">Effect entire text</input><br/>
-            <label for="starttag">Starting Tag: </label><input type="text" id="starttag" name="starttag" value='"'><br/>
-            <label for="endtag">Ending Tag: </label><input type="text" id="endtag" name="endtag" value='"'><br/>
-            <input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</input><br />
-            <input type="checkbox" id="strikethrough" title="Strikes through the Dialogue">Strikethrough</input>
+            <select name="colour" id="colours">
+                <option value="red">Red</option>
+                <option value="orange">Orange</option>
+                <option value="yellow">Yellow</option>
+                <option value="green">Green</option>
+                <option value="cyan">Cyan</option>
+                <option value="blue">Blue</option>
+                <option value="purple">Purple</option>
+                <option value="pink">Pink</option>
+                <option value="black">Black</option>
+                <option value="brown">Brown</option>
+                <option value="white">White</option>
+                <option value="gray">Gray</option>
+            </select>
+            <input type="checkbox" id="bold" title="ctrl/alt + b">Bold</input>
+            <input type="checkbox" id="italic" title="ctrl/alt + i">Italic</input>     
+            <input type="checkbox" id="rainbow" title="alt + r - overrides colour">Rainbow</input>
+            <input type="checkbox" id="sub" onclick="document.getElementById('super').checked = false">Subscript</input>
+            <input type="checkbox" id="super" onclick="document.getElementById('sub').checked = false">Superscript</input><br>
+            <textarea id="textarea" name="textarea" rows="10" cols="100"></textarea><br>
+            <button onclick="colorizeDialogue()">Colorize!</button><br>
+            <label id="dialogueOutput"></label>
+            <br/>
+            <button type="button" class="collapsible">Advanced Options</button>
+            <div class="content">
+                <input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this)">Effect entire text</input><br/>
+                <label for="starttag">Starting Tag: </label><input type="text" id="starttag" name="starttag" value='"'><br/>
+                <label for="endtag">Ending Tag: </label><input type="text" id="endtag" name="endtag" value='"'><br/>
+                <input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</input><br />
+                <input type="checkbox" id="strikethrough" title="Strikes through the Dialogue">Strikethrough</input>
+            </div>
+            <br/>
         </div>
+        <footer class="footer">
+            <form action="../index.html" >
+                Made by <a href="https://www.f-list.net/c/Charles%20de%20Altena">Charles de Altena</a><br/>
+                <input type="submit" value="Return to Overview" />
+            </form>
+        </footer>
     </body>
-    
-    <footer>
-        <form action="../index.html"  class="footer">
-            Made by <a href="https://www.f-list.net/c/Charles%20de%20Altena">Charles de Altena</a><br/>
-            <input type="submit" value="Return to Overview" /><br/><br/>
-        </form>
-    </footer>
-
     <script src="dialogue.js"></script>
 </html>
 

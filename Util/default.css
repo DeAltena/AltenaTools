@@ -1,3 +1,11 @@
+* {
+    margin: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
 .bold {
     font-weight: bold;
 }
@@ -6,16 +14,28 @@
     font-style: italic;
 }
 
-.footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
+.page-wrap {
+    min-height: 100%;
+    margin-bottom: -50px; 
+}
+.page-wrap:after {
+    content: "";
+    display: block;
+}
+
+.footer, .page-wrap:after {
+    height: 50px; 
+}
+
+.footer{
+    background-color: #ddd;
+    color: #444;
     width: 100%;
     text-align: center;
-  }
+}
 
 .collapsible {
-    background-color: #eee;
+    background-color: #ddd;
     color: #444;
     cursor: pointer;
     padding: 9px;
