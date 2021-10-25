@@ -108,6 +108,31 @@ function colorizeDialogue(){
 }
 
 function onKeyPress(e){
-    if((e.altKey || e.ctrlKey) && e.keyCode == 13)
+    if((e.altKey || e.ctrlKey) && e.keyCode == 13){
         colorizeDialogue();
+        e.preventDefault()
+    }
+    else if((e.altKey || e.ctrlKey) && e.keyCode == 66){
+        document.getElementById("bold").checked = !document.getElementById("bold").checked;
+        e.preventDefault()
+    }
+    else if((e.altKey || e.ctrlKey) && e.keyCode == 73){
+        document.getElementById("italic").checked = !document.getElementById("italic").checked;
+        e.preventDefault()
+    }
+    else if((e.altKey || e.ctrlKey) && e.keyCode == 71){
+        document.getElementById("rainbow").checked = !document.getElementById("rainbow").checked;
+        e.preventDefault()
+    }
+    else if((e.altKey || e.ctrlKey) && e.keyCode == 85){
+        document.getElementById("super").checked = !document.getElementById("super").checked;
+        document.getElementById("sub").checked = false;
+        e.preventDefault()
+    }
+    else if((e.altKey || e.ctrlKey) && e.keyCode == 76){
+        document.getElementById("sub").checked = !document.getElementById("sub").checked;
+        document.getElementById("super").checked = false;
+        e.preventDefault()
+    }
+        
 }
