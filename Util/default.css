@@ -1,9 +1,26 @@
 * {
     margin: 0;
+    color: #ceedf6;
 }
 
 html, body {
-    height: 100%;
+    background-color: #191932;
+    height: 95%;
+}
+
+button, input, select {
+    background-color: #2a2a54;
+}
+
+textarea {
+    background-color: #191932;
+    width: 90%;
+}
+
+.mainview {
+    width: 100%;
+    text-align: center;
+    background-color: #2a2a54;
 }
 
 .bold {
@@ -28,15 +45,15 @@ html, body {
 }
 
 .footer{
-    background-color: #ddd;
-    color: #444;
+    background-color: #2a2a54;
+    color: #ceedf6;
     width: 100%;
     text-align: center;
 }
 
 .collapsible {
-    background-color: #ddd;
-    color: #444;
+    background-color: #2a2a54;
+    color: #ceedf6;
     cursor: pointer;
     padding: 9px;
     width: 100%;
@@ -47,12 +64,12 @@ html, body {
 }
 
 .active, .collapsible:hover {
-    background-color: #ccc;
+    background-color: #2a2a54;
 }
 
 .content {
     padding: 0 18px;
     display: none;
     overflow: hidden;
-    background-color: #f1f1f1;
+    background-color: #343468;
 }
