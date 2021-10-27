@@ -33,16 +33,6 @@ function initVars(){
 
 }
 
-function readCols(){
-    let curcol, arr = [];
-    for(let i = 0; i < colnum; i++){
-        if(curcol = document.getElementById(`colours${i}`)){
-            arr.push(curcol.value);
-        }
-    }
-    return arr;
-}
-
 function startTags(){
     let res = "";
     if(!altCols)
@@ -197,14 +187,76 @@ const colourstemplate = `
     <button id="buttons{colnum}" onclick="removeColour(this)">Delete Colour</button>
     <br>`;
 
+var availableCols = [];
+
 function addColour(){
+    let col = readCols();
+
     document.getElementById("colourlist").innerHTML += colourstemplate.replace("{colnum}", colnum).replace("{colnum}", colnum);
+    availableCols.push(1);
     colnum++;
+    setFromCols(col);
 }
 
 function removeColour(btn){
+    let col = readCols();
     let id = btn.id.substr(-1);
+    let offset = 0;
+
+    for(let i = 0; i < id; i++)
+        if(availableCols[i] === 0) offset++;
+    
+    col.splice(id - offset, 1);
+
     document.getElementById("colourlist").innerHTML = document.getElementById("colourlist").innerHTML.replace(
         colourstemplate.replace("{colnum}", id).replace("{colnum}", id), ""
     );
+    availableCols[id] = 0;
+
+    setFromCols(col);
+}
+
+function readCols(){
+    let curcol, arr = [];
+    for(let i = 0; i < colnum; i++){
+        if(curcol = document.getElementById(`colours${i}`)){
+            arr.push(curcol.value);
+        }
+    }
+    return arr;
+}
+
+let colmap = new Map([["re", "red"], ["or", "orange"], ["ye", "yellow"], ["gr", "green"], ["cy", "cyan"], ["bl", "blue"], ["pu", "purple"], ["pi", "pink"], ["bl", "black"], ["br", "brown"], ["wh", "white"], ["gr", "gray"]]);
+
+function colsToString(col) {
+    let str = "";
+    for(let i = 0; i < col.length; i++){
+        str += col[i].substr(0, 2) + " ";
+    }
+    str = str.substr(0, str.length-1);
+    return str;
+}
+
+function stringToCols(str){
+    let col = [];
+    let tmp = str.split(" ");
+    for(let i = 0; i < tmp.length; i++){
+        col.push(colmap.get(tmp[i]));
+    }
+    return col;
+}
+
+function setFromCols(col){
+    let offset = 0, i = 0;
+    for(; i < availableCols.length; i++){
+        if(i - offset >= col.length) {document.getElementById(`colours${i}`).value = "red"; continue;}
+        if(availableCols[i] == 0) { offset++; continue; }
+
+        document.getElementById(`colours${i}`).value = col[i-offset];
+    }
+
+    for(; i - offset < col.length; i++){
+        addColour();
+        document.getElementById(`colours${i}`).value = col[i-offset];
+    }
 }
