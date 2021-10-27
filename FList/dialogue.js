@@ -1,11 +1,34 @@
 initCollapsibles();
 document.addEventListener('keydown', onKeyPress)
 
-let col, bold, italic, underline, strikethrough, coloured, rainbow, sub, sup;
+let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText;
+initVars();
+
+//needed in case browser saves state after reload
+function initVars(){
+    bold = document.getElementById("bold").checked;
+    italic = document.getElementById("italic").checked;
+    underline = document.getElementById("underline").checked;
+    strikethrough = document.getElementById("strikethrough").checked;
+    sub = document.getElementById("sub").checked;
+    sup = document.getElementById("super").checked;
+
+    if(document.getElementById("rainbow").checked){
+        altCols = true;
+        cols = rainbowCols;
+    } else if(document.getElementById("gothbow").checked){
+        altCols = true;
+        cols = gothCols;
+    } else {
+        altCols = false;
+        col = document.getElementById("colours").value;
+    }
+
+}
 
 function startTags(){
     let res = "";
-    if(coloured && !rainbow)
+    if(!altCols)
         res += `[color=${col}]`;
     if(bold)
         res += `[b]`;
@@ -37,7 +60,7 @@ function endTags(){
         res += `[/i]`;
     if(bold)
         res += `[/b]`;
-    if(coloured && !rainbow)
+    if(!altCols)
         res += `[/color]`;
 
     return res;
@@ -47,23 +70,14 @@ function colorizeDialogue(){
     let str = document.getElementById("textarea").value,
         start = 0, newBegin = 0, out = "",
         startTag = document.getElementById("starttag").value,
-        endTag = document.getElementById("endtag").value,
-        wholeText = document.getElementById("tags").checked;
+        endTag = document.getElementById("endtag").value;
 
-    col = document.getElementById("colours").value;
-    bold = document.getElementById("bold").checked;
-    italic = document.getElementById("italic").checked;
-    underline = document.getElementById("underline").checked;
-    strikethrough = document.getElementById("strikethrough").checked;
-    coloured = !isBlank(col);
-    rainbow = document.getElementById("rainbow").checked;
-    sub = document.getElementById("sub").checked;
-    sup = document.getElementById("super").checked;
+    initVars();
 
     if(wholeText){
         out += startTags();
-        if(rainbow)
-            out += rainbowText(str);
+        if(altCols)
+            out += alternateColourText(cols, str);
         else
             out += str;
         out += endTags();
@@ -76,8 +90,8 @@ function colorizeDialogue(){
                 newBegin = i;
                 start = 1;
             } else if(str[i] == endTag && start != 0) {
-                if(rainbow)
-                    out += rainbowText(str.substr(newBegin, i - newBegin + 1));
+                if(altCols)
+                    out += alternateColourText(cols, str.substr(newBegin, i - newBegin + 1));
                 else
                     out += str.substr(newBegin, i - newBegin + 1);
 
@@ -88,10 +102,11 @@ function colorizeDialogue(){
             }
         }
 
-        if(rainbow && start != 0)
-            out += rainbowText(str.substr(newBegin));
-        else
+        if(start != 0 && altCols)
+            out += alternateColourText(cols, str.substr(newBegin));  
+        else 
             out += str.substr(newBegin);
+        
 
         //if a closing " is missing, close it at the end.
         if(start != 0){

@@ -21,41 +21,43 @@
                 <span class="bold">Rainbow:</span> alt/ctrl + g <br />
                 <span class="bold">Superscript:</span> alt/ctrl + u <br />
                 <span class="bold">Subscript:</span> alt/ctrl + l <br />
-            </div>
+            </div> <br/><br/>
                 
             
             <p class="italic" id="result"></p>
-
-            <select name="colour" id="colours">
-                <option value="red">Red</option>
-                <option value="orange">Orange</option>
-                <option value="yellow">Yellow</option>
-                <option value="green">Green</option>
-                <option value="cyan">Cyan</option>
-                <option value="blue">Blue</option>
-                <option value="purple">Purple</option>
-                <option value="pink">Pink</option>
-                <option value="black">Black</option>
-                <option value="brown">Brown</option>
-                <option value="white">White</option>
-                <option value="gray">Gray</option>
-            </select>
-            <input type="checkbox" id="bold" title="ctrl/alt + b">Bold</input>
-            <input type="checkbox" id="italic" title="ctrl/alt + i">Italic</input>     
-            <input type="checkbox" id="rainbow" title="alt + r - overrides colour">Rainbow</input>
-            <input type="checkbox" id="sub" onclick="document.getElementById('super').checked = false">Subscript</input>
-            <input type="checkbox" id="super" onclick="document.getElementById('sub').checked = false">Superscript</input><br>
-            <textarea id="textarea" name="textarea" rows="10" cols="100"></textarea><br>
-            <button onclick="colorizeDialogue()">Colorize!</button><br>
-            <label id="dialogueOutput"></label>
+            <div class="mainview">
+                <select name="colour" id="colours">
+                    <option value="red">Red</option>
+                    <option value="orange">Orange</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="green">Green</option>
+                    <option value="cyan">Cyan</option>
+                    <option value="blue">Blue</option>
+                    <option value="purple">Purple</option>
+                    <option value="pink">Pink</option>
+                    <option value="black">Black</option>
+                    <option value="brown">Brown</option>
+                    <option value="white">White</option>
+                    <option value="gray">Gray</option>
+                </select>
+                <input type="checkbox" id="bold" title="ctrl/alt + b" onclick="bold = this.checked">Bold</input>
+                <input type="checkbox" id="italic" title="ctrl/alt + i" onclick="italic = this.checked">Italic</input>     
+                <input type="checkbox" id="rainbow" title="ctrl/alt + g - overrides colour" onclick="document.getElementById('gothbow').checked = false; rainbow = this.checked; cols = rainbowCols;">Rainbow</input>
+                <input type="checkbox" id="sub" onclick="document.getElementById('super').checked = false; sub = this.checked">Subscript</input>
+                <input type="checkbox" id="super" onclick="document.getElementById('sub').checked = false; sup = this.checked">Superscript</input>
+                <input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this); wholeText = this.checked">Effect entire text</input><br/>
+                <textarea id="textarea" name="textarea" rows="10"></textarea><br>
+                <button onclick="colorizeDialogue()">Colorize!</button><br>
+                <label id="dialogueOutput"></label>
+            </div>
             <br/>
             <button type="button" class="collapsible">Advanced Options</button>
             <div class="content">
-                <input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this)">Effect entire text</input><br/>
+                <input type="checkbox" id="gothbow" onclick="document.getElementById('rainbow').checked = false; gothbow = this.checked; cols = gothCols;">Gothbow</input><br />
                 <label for="starttag">Starting Tag: </label><input type="text" id="starttag" name="starttag" value='"'><br/>
                 <label for="endtag">Ending Tag: </label><input type="text" id="endtag" name="endtag" value='"'><br/>
-                <input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</input><br />
-                <input type="checkbox" id="strikethrough" title="Strikes through the Dialogue">Strikethrough</input>
+                <input type="checkbox" id="underline" title="Underlines the Dialogue" onclick="underline = this.checked">Underline</input><br />
+                <input type="checkbox" id="strikethrough" title="Strikes through the Dialogue" onclick="strikethrough = this.checked">Strikethrough</input>
             </div>
             <br/>
         </div>

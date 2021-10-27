@@ -1,12 +1,5 @@
-function rainbowText(str) {
-    const col = ["red", "orange", "yellow", "green", "cyan", "blue", "purple"];
-    return alternateColourText(col, str);
-}
-
-function gothbowText(str) {
-    const col = ["gray", "white", "black"];
-    return alternateColourText(col, str);
-}
+const rainbowCols = ["red", "orange", "yellow", "green", "cyan", "blue", "purple"];
+const gothCols = ["gray", "white", "black"];
 
 function alternateColourText(col, str) {
     let res = "";
