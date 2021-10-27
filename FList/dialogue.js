@@ -77,7 +77,7 @@ function colorizeDialogue(){
     if(wholeText){
         out += startTags();
         if(altCols)
-            out += alternateColourText(cols, str);
+            out += alternateColourLetters(cols, str);
         else
             out += str;
         out += endTags();
@@ -91,7 +91,7 @@ function colorizeDialogue(){
                 start = 1;
             } else if(str[i] == endTag && start != 0) {
                 if(altCols)
-                    out += alternateColourText(cols, str.substr(newBegin, i - newBegin + 1));
+                    out += alternateColourLetters(cols, str.substr(newBegin, i - newBegin + 1));
                 else
                     out += str.substr(newBegin, i - newBegin + 1);
 
@@ -103,7 +103,7 @@ function colorizeDialogue(){
         }
 
         if(start != 0 && altCols)
-            out += alternateColourText(cols, str.substr(newBegin));  
+            out += alternateColourLetters(cols, str.substr(newBegin));  
         else 
             out += str.substr(newBegin);
         
