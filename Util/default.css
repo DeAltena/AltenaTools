@@ -12,6 +12,10 @@ button, input, select {
     background-color: #2a2a54;
 }
 
+#dialogueOutput {
+    word-break: break-all;
+}
+
 textarea {
     background-color: #191932;
     width: 90%;

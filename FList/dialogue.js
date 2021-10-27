@@ -1,7 +1,7 @@
 initCollapsibles();
 document.addEventListener('keydown', onKeyPress)
 
-let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText;
+let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords;
 initVars();
 
 //needed in case browser saves state after reload
@@ -12,18 +12,35 @@ function initVars(){
     strikethrough = document.getElementById("strikethrough").checked;
     sub = document.getElementById("sub").checked;
     sup = document.getElementById("super").checked;
+    wholeText = document.getElementById("tags").checked;
 
     if(document.getElementById("rainbow").checked){
         altCols = true;
+        affectWords = document.getElementById("wordmode").checked;
         cols = rainbowCols;
     } else if(document.getElementById("gothbow").checked){
         altCols = true;
+        affectWords = document.getElementById("wordmode").checked;
         cols = gothCols;
+    } else if(document.getElementById("custbow").checked){
+        altCols = true;
+        affectWords = document.getElementById("wordmode").checked;
+        cols = readCols();
     } else {
         altCols = false;
         col = document.getElementById("colours").value;
     }
 
+}
+
+function readCols(){
+    let curcol, arr = [];
+    for(let i = 0; i < colnum; i++){
+        if(curcol = document.getElementById(`colours${i}`)){
+            arr.push(curcol.value);
+        }
+    }
+    return arr;
 }
 
 function startTags(){
@@ -77,7 +94,10 @@ function colorizeDialogue(){
     if(wholeText){
         out += startTags();
         if(altCols)
-            out += alternateColourLetters(cols, str);
+            if(affectWords)
+                out += alternateColourWords(cols, str);
+            else
+                out += alternateColourLetters(cols, str);
         else
             out += str;
         out += endTags();
@@ -91,7 +111,10 @@ function colorizeDialogue(){
                 start = 1;
             } else if(str[i] == endTag && start != 0) {
                 if(altCols)
-                    out += alternateColourLetters(cols, str.substr(newBegin, i - newBegin + 1));
+                    if(affectWords)
+                        out += alternateColourWords(cols, i - newBegin + 1);
+                    else
+                        out += alternateColourLetters(cols, str.substr(newBegin, i - newBegin + 1));
                 else
                     out += str.substr(newBegin, i - newBegin + 1);
 
@@ -103,7 +126,10 @@ function colorizeDialogue(){
         }
 
         if(start != 0 && altCols)
-            out += alternateColourLetters(cols, str.substr(newBegin));  
+            if(affectWords)
+                out += alternateColourWords(cols, str.substr(newBegin));
+            else
+                out += alternateColourLetters(cols, str.substr(newBegin));  
         else 
             out += str.substr(newBegin);
         
@@ -150,4 +176,35 @@ function onKeyPress(e){
         e.preventDefault()
     }
         
+}
+
+let colnum = 0;
+const colourstemplate = `
+    <select name="colour" id="colours{colnum}">
+        <option value="red">Red</option>
+        <option value="orange">Orange</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+        <option value="cyan">Cyan</option>
+        <option value="blue">Blue</option>
+        <option value="purple">Purple</option>
+        <option value="pink">Pink</option>
+        <option value="black">Black</option>
+        <option value="brown">Brown</option>
+        <option value="white">White</option>
+        <option value="gray">Gray</option>
+    </select>
+    <button id="buttons{colnum}" onclick="removeColour(this)">Delete Colour</button>
+    <br>`;
+
+function addColour(){
+    document.getElementById("colourlist").innerHTML += colourstemplate.replace("{colnum}", colnum).replace("{colnum}", colnum);
+    colnum++;
+}
+
+function removeColour(btn){
+    let id = btn.id.substr(-1);
+    document.getElementById("colourlist").innerHTML = document.getElementById("colourlist").innerHTML.replace(
+        colourstemplate.replace("{colnum}", id).replace("{colnum}", id), ""
+    );
 }
