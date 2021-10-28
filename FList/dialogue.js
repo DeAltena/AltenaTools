@@ -246,8 +246,8 @@ function stringToCols(str){
 function setFromCols(col){
     let offset = 0, i = 0;
     for(; i < availableCols.length; i++){
-        if(i - offset >= col.length) {document.getElementById(`colours${i}`).value = "red"; continue;}
         if(availableCols[i] == 0) { offset++; continue; }
+        if(i - offset >= col.length) {document.getElementById(`colours${i}`).value = "red"; continue;}
 
         document.getElementById(`colours${i}`).value = col[i-offset];
     }
@@ -260,15 +260,11 @@ function setFromCols(col){
 
 function saveCookie(col){
     document.cookie = `cols=${colsToString(col)}; SameSite=Lax`;
-    console.log(`Saved ${document.cookie}`);
 }
 
 function restoreFromCookie(){
-    console.log(document.cookie);
-    console.log(stringToCols(document.cookie));
     let col = document.cookie.substr(5);
     col = col.split(";")[0];
-    console.log(col);
 
     if(!isBlank(document.cookie))
         setFromCols(stringToCols(col));
