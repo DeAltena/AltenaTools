@@ -18,7 +18,7 @@ const colourstemplate = `
     <br>`;
 var availableCols = [];
 let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords;
-let colmap = new Map([["re", "red"], ["or", "orange"], ["ye", "yellow"], ["gr", "green"], ["cy", "cyan"], ["bl", "blue"], ["pu", "purple"], ["pi", "pink"], ["bl", "black"], ["br", "brown"], ["wh", "white"], ["gr", "gray"]]);
+let colmap = new Map([["red", "red"], ["ora", "orange"], ["yel", "yellow"], ["gre", "green"], ["cya", "cyan"], ["blu", "blue"], ["pur", "purple"], ["pin", "pink"], ["bla", "black"], ["bro", "brown"], ["whi", "white"], ["gra", "gray"]]);
 initVars();
 initCollapsibles();
 document.addEventListener('keydown', onKeyPress)
@@ -230,7 +230,7 @@ function readCols(){
 function colsToString(col) {
     let str = "";
     for(let i = 0; i < col.length; i++){
-        str += col[i].substr(0, 2) + " ";
+        str += col[i].substr(0, 3) + " ";
     }
     str = str.substr(0, str.length-1);
     return str;
