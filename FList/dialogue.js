@@ -261,7 +261,7 @@ function setFromCols(col){
 }
 
 function saveCookie(col){
-    document.cookie = `cols=${colsToString(col)}`;
+    document.cookie = `${colsToString(col)}`;
     console.log(`Saved ${document.cookie}`);
 }
 
