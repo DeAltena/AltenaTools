@@ -1,9 +1,28 @@
+let colnum = 0;
+const colourstemplate = `
+    <select name="colour" id="colours{colnum}">
+        <option value="red">Red</option>
+        <option value="orange">Orange</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+        <option value="cyan">Cyan</option>
+        <option value="blue">Blue</option>
+        <option value="purple">Purple</option>
+        <option value="pink">Pink</option>
+        <option value="black">Black</option>
+        <option value="brown">Brown</option>
+        <option value="white">White</option>
+        <option value="gray">Gray</option>
+    </select>
+    <button id="buttons{colnum}" onclick="removeColour(this)">Delete Colour</button>
+    <br>`;
+var availableCols = [];
+let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords;
+let colmap = new Map([["re", "red"], ["or", "orange"], ["ye", "yellow"], ["gr", "green"], ["cy", "cyan"], ["bl", "blue"], ["pu", "purple"], ["pi", "pink"], ["bl", "black"], ["br", "brown"], ["wh", "white"], ["gr", "gray"]]);
+initVars();
 initCollapsibles();
 document.addEventListener('keydown', onKeyPress)
 restoreFromCookie();
-
-let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords;
-initVars();
 
 //needed in case browser saves state after reload
 function initVars(){
@@ -171,27 +190,6 @@ function onKeyPress(e){
         
 }
 
-let colnum = 0;
-const colourstemplate = `
-    <select name="colour" id="colours{colnum}">
-        <option value="red">Red</option>
-        <option value="orange">Orange</option>
-        <option value="yellow">Yellow</option>
-        <option value="green">Green</option>
-        <option value="cyan">Cyan</option>
-        <option value="blue">Blue</option>
-        <option value="purple">Purple</option>
-        <option value="pink">Pink</option>
-        <option value="black">Black</option>
-        <option value="brown">Brown</option>
-        <option value="white">White</option>
-        <option value="gray">Gray</option>
-    </select>
-    <button id="buttons{colnum}" onclick="removeColour(this)">Delete Colour</button>
-    <br>`;
-
-var availableCols = [];
-
 function addColour(){
     let col = readCols();
 
@@ -228,8 +226,6 @@ function readCols(){
     }
     return arr;
 }
-
-let colmap = new Map([["re", "red"], ["or", "orange"], ["ye", "yellow"], ["gr", "green"], ["cy", "cyan"], ["bl", "blue"], ["pu", "purple"], ["pi", "pink"], ["bl", "black"], ["br", "brown"], ["wh", "white"], ["gr", "gray"]]);
 
 function colsToString(col) {
     let str = "";
