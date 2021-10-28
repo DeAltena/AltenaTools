@@ -266,6 +266,8 @@ function saveCookie(col){
 }
 
 function restoreFromCookie(){
+    console.log(document.cookie);
+    console.log(stringToCols(document.cookie));
     if(!isBlank(document.cookie))
         setFromCols(stringToCols(document.cookie));
 }
