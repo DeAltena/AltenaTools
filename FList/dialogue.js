@@ -261,7 +261,7 @@ function setFromCols(col){
 }
 
 function saveCookie(col){
-    document.cookie = `${colsToString(col)}`;
+    document.cookie = `cols=${colsToString(col)}`;
     console.log(`Saved ${document.cookie}`);
 }
 
@@ -269,5 +269,5 @@ function restoreFromCookie(){
     console.log(document.cookie);
     console.log(stringToCols(document.cookie));
     if(!isBlank(document.cookie))
-        setFromCols(stringToCols(document.cookie));
+        setFromCols(stringToCols(document.cookie.substr(5)));
 }
