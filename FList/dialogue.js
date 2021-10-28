@@ -19,12 +19,10 @@ const colourstemplate = `
 var availableCols = [];
 let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords;
 let colmap = new Map([["red", "red"], ["ora", "orange"], ["yel", "yellow"], ["gre", "green"], ["cya", "cyan"], ["blu", "blue"], ["pur", "purple"], ["pin", "pink"], ["bla", "black"], ["bro", "brown"], ["whi", "white"], ["gra", "gray"]]);
-initVars();
 initCollapsibles();
 document.addEventListener('keydown', onKeyPress)
 restoreFromCookie();
 
-//needed in case browser saves state after reload
 function initVars(){
     bold = document.getElementById("bold").checked;
     italic = document.getElementById("italic").checked;
@@ -261,13 +259,17 @@ function setFromCols(col){
 }
 
 function saveCookie(col){
-    document.cookie = `cols=${colsToString(col)}`;
+    document.cookie = `cols=${colsToString(col)}; SameSite=Lax`;
     console.log(`Saved ${document.cookie}`);
 }
 
 function restoreFromCookie(){
     console.log(document.cookie);
     console.log(stringToCols(document.cookie));
+    let col = document.cookie.substr(5);
+    col = col.split(";")[0];
+    console.log(col);
+
     if(!isBlank(document.cookie))
-        setFromCols(stringToCols(document.cookie.substr(5)));
+        setFromCols(stringToCols(col));
 }
