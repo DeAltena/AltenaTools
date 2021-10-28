@@ -15,7 +15,6 @@ function alternateColourText(col, str) {
 }
 
 function alternateColourLetters(col, str) {
-    console.log(col);
     let res = `[color=${col[0]}]${str[0]}`, offset = 0, ascend = true, i=0
         tmp = col.shift();
     str = str.substr(1);

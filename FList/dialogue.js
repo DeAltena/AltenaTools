@@ -1,5 +1,6 @@
 initCollapsibles();
 document.addEventListener('keydown', onKeyPress)
+restoreFromCookie();
 
 let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords;
 initVars();
@@ -26,6 +27,8 @@ function initVars(){
         altCols = true;
         affectWords = document.getElementById("wordmode").checked;
         cols = readCols();
+        if(document.getElementById("savetocookies").checked)
+            saveCookie(cols);
     } else {
         altCols = false;
         col = document.getElementById("colours").value;
@@ -259,4 +262,14 @@ function setFromCols(col){
         addColour();
         document.getElementById(`colours${i}`).value = col[i-offset];
     }
+}
+
+function saveCookie(col){
+    document.cookie = `cols=${colsToString(col)}`;
+    console.log(`Saved ${document.cookie}`);
+}
+
+function restoreFromCookie(){
+    if(!isBlank(document.cookie))
+        setFromCols(stringToCols(document.cookie));
 }
