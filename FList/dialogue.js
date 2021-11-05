@@ -122,7 +122,7 @@ function colorizeDialogue(){
             } else if(str[i] == endTag && start != 0) {
                 if(altCols)
                     if(affectWords)
-                        out += alternateColourWords(cols, i - newBegin + 1);
+                        out += alternateColourWords(cols, str.substr(newBegin, i - newBegin + 1));
                     else
                         out += alternateColourLetters(cols, str.substr(newBegin, i - newBegin + 1));
                 else
