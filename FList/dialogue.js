@@ -17,7 +17,7 @@ const colourstemplate = `
     <button id="buttons{colnum}" onclick="removeColour(this)">Delete Colour</button>
     <br>`;
 var availableCols = [];
-let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords;
+let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords, excludeTags;
 let colmap = new Map([["red", "red"], ["ora", "orange"], ["yel", "yellow"], ["gre", "green"], ["cya", "cyan"], ["blu", "blue"], ["pur", "purple"], ["pin", "pink"], ["bla", "black"], ["bro", "brown"], ["whi", "white"], ["gra", "gray"]]);
 initCollapsibles();
 document.addEventListener('keydown', onKeyPress)
@@ -31,6 +31,7 @@ function initVars(){
     sub = document.getElementById("sub").checked;
     sup = document.getElementById("super").checked;
     wholeText = document.getElementById("tags").checked;
+    excludeTags = document.getElementById("excludeTags").checked;
 
     if(document.getElementById("rainbow").checked){
         altCols = true;
@@ -97,10 +98,16 @@ function colorizeDialogue(){
     let str = document.getElementById("textarea").value,
         start = 0, newBegin = 0, out = "",
         startTag = document.getElementById("starttag").value,
-        endTag = document.getElementById("endtag").value;
+        endTag = document.getElementById("endtag").value,
+        startLen = startTag.length,
+        endLen = endTag.length;
 
     initVars();
-
+    
+    if(startLen > 1 || endLen > 1) {
+        excludeTags = true;
+    }
+    
     if(wholeText){
         out += startTags();
         if(altCols)
@@ -113,24 +120,40 @@ function colorizeDialogue(){
         out += endTags();
     } else {
         for(let i = 0; i < str.length; i++) {
-            if(str[i] == startTag && start == 0) {
-                out += str.substr(newBegin, i - newBegin);
+            if(str.substr(i, startLen) == startTag && start == 0) {
+                if(excludeTags) {
+                    out += str.substr(newBegin, i - newBegin + startLen);
+                    newBegin = i + startLen;
+                } else {
+                    out += str.substr(newBegin, i - newBegin);
+                    newBegin = i;
+                }
                 out += startTags();
 
-                newBegin = i;
                 start = 1;
-            } else if(str[i] == endTag && start != 0) {
-                if(altCols)
+            } else if(str.substr(i, endLen) == endTag && start != 0) {
+                let substring
+                    if(excludeTags) {
+                        substring = str.substr(newBegin, i - newBegin);
+                    } else {
+                        substring = str.substr(newBegin, i - newBegin + 1);
+                    }
+                if(altCols){
                     if(affectWords)
-                        out += alternateColourWords(cols, str.substr(newBegin, i - newBegin + 1));
+                        out += alternateColourWords(cols, substring);
                     else
-                        out += alternateColourLetters(cols, str.substr(newBegin, i - newBegin + 1));
-                else
-                    out += str.substr(newBegin, i - newBegin + 1);
+                        out += alternateColourLetters(cols, substring);
+                } else {
+                    out += substring;
+                }
 
                 out += endTags();
 
-                newBegin = i + 1;
+                if(excludeTags) {
+                    newBegin = i;
+                } else {
+                    newBegin = i + 1;
+                }
                 start = 0;  
             }
         }

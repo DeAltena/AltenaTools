@@ -55,14 +55,12 @@ function alternateColourLetters(col, str) {
 }
 
 function alternateColourWords(col, str) {
-    console.log(typeof str)
-    console.log(str)
     let words = str.split(" ");
     let res = "";
     for (let i = 0; i < words.length; i++){
         res += `[color=${col[i % col.length]}]${words[i]}[/color] `;
     }
-    res.substr(0, res.length-1);
+    res = res.substr(0, res.length-1);
 
     return res;
 }
