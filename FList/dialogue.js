@@ -292,3 +292,8 @@ function restoreFromCookie(){
     if(!isBlank(document.cookie))
         setFromCols(stringToCols(col));
 }
+
+function updateCount(area){
+    document.getElementById("chars").innerHTML = area.value.length;
+    document.getElementById("words").innerHTML = (area.value.match(/(\w+)/g) || []).length;
+}

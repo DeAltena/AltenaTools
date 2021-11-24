@@ -26,6 +26,8 @@
             
             <p class="italic" id="result"></p>
             <div class="mainview">
+                <label for="chars">Characters: </label><label id="chars">0</label>
+                <label for="words">Words: </label><label id="words">0</label><br>
                 <select name="colour" id="colours">
                     <option value="red">Red</option>
                     <option value="orange">Orange</option>
@@ -44,8 +46,8 @@
                 <input type="checkbox" id="italic" title="ctrl/alt + i">Italic</input>   
                 <input type="checkbox" id="sub" onclick="document.getElementById('super').checked = false;">Subscript</input>
                 <input type="checkbox" id="super" onclick="document.getElementById('sub').checked = false;">Superscript</input>
-                <input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this)">Effect entire text</input><br/>
-                <textarea id="textarea" name="textarea" rows="10"></textarea><br>
+                <input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this)">Affect entire text</input><br/>
+                <textarea id="textarea" name="textarea" rows="10" oninput="updateCount(this)"></textarea><br>
                 <button onclick="colorizeDialogue()">Colorize!</button><br>
                 <label id="dialogueOutput"></label>
             </div>
