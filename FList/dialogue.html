@@ -47,7 +47,9 @@
                 <label><input type="checkbox" id="italic" title="ctrl/alt + i">Italic</label>   
                 <label><input type="checkbox" id="sub" onclick="document.getElementById('super').checked = false;">Subscript</label>
                 <label><input type="checkbox" id="super" onclick="document.getElementById('sub').checked = false;">Superscript</label>
-                <label><input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this)">Affect entire text</label><br/>
+                <label><input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</label>
+                <label><input type="checkbox" id="strikethrough" title="Strikes through the Dialogue">Strikethrough</label>
+                <label><input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this)">Effect entire text</label><br/>
                 <textarea class="maininput" id="textarea" name="textarea" rows="10" oninput="updateCount(this)"></textarea><br>
                 <button onclick="colorizeDialogue()">Colorize!</button><br>
                 <label id="dialogueOutput"></label>
@@ -75,8 +77,6 @@
                 <label for="starttag">Starting Tag: </label><input type="text" id="starttag" name="starttag" value='"'><br/>
                 <label for="endtag">Ending Tag: </label><input type="text" id="endtag" name="endtag" value='"'><br/>
                 <label><input type="checkbox" id="excludeTags" title="Excludes the Tags from the formatting">Exclude Tags</label><br/>
-                <label><input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</label><br />
-                <label><input type="checkbox" id="strikethrough" title="Strikes through the Dialogue">Strikethrough</label>
             </div>
             <button type="button" class="collapsible">Keyword Highlighting</button>
             <div class="content">

@@ -28,6 +28,8 @@ const dicttemplate = `
     ${coltemplate}
     <label><input type="checkbox" id="bold{colnum}">Bold</label>
     <label><input type="checkbox" id="italic{colnum}">Italic</label>
+    <label><input type="checkbox" id="underline{colnum}">Underline</label>
+    <label><input type="checkbox" id="strikethrough{colnum}">Strikethrough</label>
     <button id="buttons{colnum}" onclick="removeDict(this)">Delete Colour</button>
     <br>`;
 var availableCols = []; var availableDicts = [];
@@ -140,6 +142,14 @@ function applyDict(str){
             if(dicts[d].bol){
                 pre = `[b]` + pre;
                 post += `[/b]`;
+            }
+            if(dicts[d].sti){
+                pre = `[s]` + pre;
+                post += `[/s]`;
+            }
+            if(dicts[d].und){
+                pre = `[u]` + pre;
+                post += `[/u]`;
             }
             words = splitDict(dicts[d]);
             for(let w = 0; w < words.length; w++){
@@ -372,7 +382,9 @@ function readDicts(){
             text : document.getElementById(`textarea${dicttag}${availableDicts[i]}`).value,
             col : document.getElementById(`colours${dicttag}${availableDicts[i]}`).value,
             ita : document.getElementById(`italic${dicttag}${availableDicts[i]}`).checked,
-            bol : document.getElementById(`bold${dicttag}${availableDicts[i]}`).checked
+            bol : document.getElementById(`bold${dicttag}${availableDicts[i]}`).checked,
+            sti : document.getElementById(`strikethrough${dicttag}${availableDicts[i]}`).checked,
+            und : document.getElementById(`underline${dicttag}${availableDicts[i]}`).checked
         });
     }
     return arr;
@@ -385,12 +397,16 @@ function setDicts(dicts){
             document.getElementById(`colours${dicttag}${availableDicts[i]}`).value = "red"; 
             document.getElementById(`italic${dicttag}${availableDicts[i]}`).checked = false; 
             document.getElementById(`bold${dicttag}${availableDicts[i]}`).checked = false; 
+            document.getElementById(`strikethrough${dicttag}${availableDicts[i]}`).checked = false; 
+            document.getElementById(`underline${dicttag}${availableDicts[i]}`).checked = false; 
             continue;
         }
         document.getElementById(`textarea${dicttag}${availableDicts[i]}`).value = dicts[i].text;
         document.getElementById(`colours${dicttag}${availableDicts[i]}`).value = dicts[i].col;
         document.getElementById(`italic${dicttag}${availableDicts[i]}`).checked = dicts[i].ita; 
         document.getElementById(`bold${dicttag}${availableDicts[i]}`).checked = dicts[i].bol; 
+        document.getElementById(`strikethrough${dicttag}${availableDicts[i]}`).checked = dicts[i].sti; 
+        document.getElementById(`underline${dicttag}${availableDicts[i]}`).checked = dicts[i].und; 
     }
 
     for(; i < dicts.length; i++){
@@ -399,6 +415,8 @@ function setDicts(dicts){
         document.getElementById(`colours${dicttag}${availableDicts[i]}`).value = dicts[i].col;
         document.getElementById(`italic${dicttag}${availableDicts[i]}`).checked = dicts[i].ita; 
         document.getElementById(`bold${dicttag}${availableDicts[i]}`).checked = dicts[i].bol; 
+        document.getElementById(`strikethrough${dicttag}${availableDicts[i]}`).checked = dicts[i].sti; 
+        document.getElementById(`underline${dicttag}${availableDicts[i]}`).checked = dicts[i].und; 
     }
 }
 
