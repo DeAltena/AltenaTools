@@ -18,7 +18,14 @@ button, input, select {
 
 textarea {
     background-color: #191932;
+}
+
+.maininput {
     width: 90%;
+}
+
+.dictentry {
+    width: 60%;
 }
 
 .mainview {
@@ -37,7 +44,7 @@ textarea {
 
 .page-wrap {
     min-height: 100%;
-    margin-bottom: -50px; 
+    margin-bottom: 0px; 
 }
 .page-wrap:after {
     content: "";

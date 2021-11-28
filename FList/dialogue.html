@@ -42,12 +42,12 @@
                     <option value="white">White</option>
                     <option value="gray">Gray</option>
                 </select>
-                <input type="checkbox" id="bold" title="ctrl/alt + b">Bold</input>
-                <input type="checkbox" id="italic" title="ctrl/alt + i">Italic</input>   
-                <input type="checkbox" id="sub" onclick="document.getElementById('super').checked = false;">Subscript</input>
-                <input type="checkbox" id="super" onclick="document.getElementById('sub').checked = false;">Superscript</input>
-                <input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this)">Affect entire text</input><br/>
-                <textarea id="textarea" name="textarea" rows="10" oninput="updateCount(this)"></textarea><br>
+                <label><input type="checkbox" id="bold" title="ctrl/alt + b">Bold</label>
+                <label><input type="checkbox" id="italic" title="ctrl/alt + i">Italic</label>   
+                <label><input type="checkbox" id="sub" onclick="document.getElementById('super').checked = false;">Subscript</label>
+                <label><input type="checkbox" id="super" onclick="document.getElementById('sub').checked = false;">Superscript</label>
+                <label><input type="checkbox" id="tags" title="Check to apply it to the entire text, rather than just between tags!" onclick="disableOnChecked('endtag', this);disableOnChecked('starttag', this)">Affect entire text</label><br/>
+                <textarea class="maininput" id="textarea" name="textarea" rows="10" oninput="updateCount(this)"></textarea><br>
                 <button onclick="colorizeDialogue()">Colorize!</button><br>
                 <label id="dialogueOutput"></label>
             </div>
@@ -55,13 +55,13 @@
             <button type="button" class="collapsible">Rainbow Colouring Options</button>
             <div class="content">
                 <input type="radio" id="lettermode" name="colourtype" value="0" checked=true>
-                <label for="coltype1">Letters</label><br>
+                <label for="lettermode">Letters</label><br>
                 <input type="radio" id="wordmode" name="colourtype" value="1">
-                <label for="coltype2">Words</label><br>  
+                <label for="wordmode">Words</label><br>  
 
-                <input type="checkbox" id="rainbow" title="ctrl/alt + g - overrides colour" onclick="document.getElementById('gothbow').checked = false;document.getElementById('custbow').checked = false;">Rainbow</input>
-                <input type="checkbox" id="gothbow" onclick="document.getElementById('rainbow').checked = false;document.getElementById('custbow').checked = false;">Gothbow</input>
-                <input type="checkbox" id="custbow" onclick="document.getElementById('rainbow').checked = false;document.getElementById('gothbow').checked = false;">Custom Colour Sequence</input><br />
+                <label><input type="checkbox" id="rainbow" title="ctrl/alt + g - overrides colour" onclick="document.getElementById('gothbow').checked = false;document.getElementById('custbow').checked = false;">Rainbow</label>
+                <label><input type="checkbox" id="gothbow" onclick="document.getElementById('rainbow').checked = false;document.getElementById('custbow').checked = false;">Gothbow</label>
+                <label><input type="checkbox" id="custbow" onclick="document.getElementById('rainbow').checked = false;document.getElementById('gothbow').checked = false;">Custom Colour Sequence</label><br />
 
                 <div id="colourlist">
                     
@@ -69,16 +69,25 @@
                 <button onclick="addColour()">Add Colour!</button><br>
                 <input type="checkbox" id="savetocookies" >Save Custom Colour Sequence to Cookies (Will be available on repeat visits)</input><br />
             </div>
-            <br/>
             <button type="button" class="collapsible">Advanced Options</button>
             <div class="content">
                 <label for="starttag">Starting Tag: </label><input type="text" id="starttag" name="starttag" value='"'><br/>
                 <label for="endtag">Ending Tag: </label><input type="text" id="endtag" name="endtag" value='"'><br/>
-                <input type="checkbox" id="excludeTags" title="Excludes the Tags from the formatting">Exclude Tags</input><br/>
-                <input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</input><br />
-                <input type="checkbox" id="strikethrough" title="Strikes through the Dialogue">Strikethrough</input>
+                <label><input type="checkbox" id="excludeTags" title="Excludes the Tags from the formatting">Exclude Tags</label><br/>
+                <label><input type="checkbox" id="underline" title="Underlines the Dialogue">Underline</label><br />
+                <label><input type="checkbox" id="strikethrough" title="Strikes through the Dialogue">Strikethrough</label>
             </div>
-            <br/>
+            <button type="button" class="collapsible">Dictionary</button>
+            <div class="content">
+                <label>In the dictionary, you can define certain words to be highlighted, completely independent of tags. Seperate via Comma (,).</label><br>
+                <label>This is case-insensitive, and only one dictionary rule can be applied per word.</label><br>
+                <label><input type="checkbox" id="dict">Use Dictionary</label><br />
+                <label><input type="checkbox" id="inDia" checked=true>Apply Dictionary within Tags</label><br />
+                <div id="dictlist">
+                    
+                </div>
+                <button onclick="addDict()">Add Dictionary Entry!</button><br>
+            </div>
         </div>
         <footer class="footer">
             <form action="../index.html" >

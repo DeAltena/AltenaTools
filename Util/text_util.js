@@ -57,3 +57,17 @@ function disableOnChecked(id, checkbox){
 function enableOnChecked(id, checkbox){
     document.getElementById(id).disabled = !checkbox.checked;
 }
+
+function splitSentence(str){
+    return str.match(/([\w.,\/#!$%\^&\*;:{}=\-`~()\\\[\]?]+)/g);
+}
+
+function splitDict(dict){
+    return dict.text.split(",");
+}
+
+function isSameWord(str1, str2){
+    tmp1 = str1.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()\\\[\]?]/g,"");
+    tmp2 = str2.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()\\\[\]?]/g,"");
+    return tmp1.toLowerCase() == tmp2.toLowerCase();
+}
