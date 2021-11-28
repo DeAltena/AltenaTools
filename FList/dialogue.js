@@ -1,5 +1,6 @@
 let colnum = 0; let dictnum = 0;
 let coltag = "C"; let dicttag = "D";
+let COL_NONE = "none";
 const coltemplate = `
     <select name="colour" id="colours{colnum}">
         <option value="red">Red</option>
@@ -14,6 +15,7 @@ const coltemplate = `
         <option value="brown">Brown</option>
         <option value="white">White</option>
         <option value="gray">Gray</option>
+        <option value="${COL_NONE}">None</option>
     </select>`;
 
 const colourstemplate = `
@@ -30,7 +32,6 @@ const dicttemplate = `
     <br>`;
 var availableCols = []; var availableDicts = [];
 let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords, excludeTags, dicts, inDia;
-let COL_NONE = "none";
 let colmap = new Map([["red", "red"], ["ora", "orange"], ["yel", "yellow"], ["gre", "green"], ["cya", "cyan"], ["blu", "blue"], ["pur", "purple"], 
     ["pin", "pink"], ["bla", "black"], ["bro", "brown"], ["whi", "white"], ["gra", "gray"], [COL_NONE.substr(0, 3), COL_NONE]]);
 
@@ -78,7 +79,7 @@ function initVars(){
 
 function startTags(){
     let res = "";
-    if(!altCols)
+    if(!altCols && col != COL_NONE)
         res += `[color=${col}]`;
     if(bold)
         res += `[b]`;
@@ -110,7 +111,7 @@ function endTags(){
         res += `[/i]`;
     if(bold)
         res += `[/b]`;
-    if(!altCols)
+    if(!altCols && col != COL_NONE)
         res += `[/color]`;
 
     return res;
@@ -125,6 +126,8 @@ function applyDict(str){
     console.log(text);
     for(let t = 0; t < text.length; t++){
         for(let d = 0; d < dicts.length; d++){
+            if(dicts[d].text === "") continue;
+
             pre = ""; post = "";
             if(dicts[d].col != COL_NONE){
                 pre = `[color=${dicts[d].col}]` + pre;
