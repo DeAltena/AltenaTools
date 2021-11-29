@@ -71,3 +71,27 @@ function isSameWord(str1, str2){
     tmp2 = str2.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()\\\[\]?]/g,"");
     return tmp1.toLowerCase() == tmp2.toLowerCase();
 }
+
+function getSelectedText(doc, area){
+    if (area.selectionStart !== undefined){
+        return {
+            text : area.value.substring(area.selectionStart, area.selectionEnd),
+            start : area.selectionStart,
+            end : area.selectionEnd
+        };
+    }else if (document.selection !== undefined){
+        area.focus();
+        return {
+            text : document.selection.createRange().text,
+            start : document.selection.createRange().startOffset,
+            end : document.selection.createRange().endOffset
+        };
+    }
+    return "";
+}
+
+function updateSelection(selection, area){
+    area.value = area.value.substring(0, selection.start) 
+                    + selection.text
+                    +  area.value.substring(selection.end, area.value.length);
+}

@@ -30,9 +30,11 @@ const dicttemplate = `
     <label><input type="checkbox" id="italic{colnum}">Italic</label>
     <label><input type="checkbox" id="underline{colnum}">Underline</label>
     <label><input type="checkbox" id="strikethrough{colnum}">Strikethrough</label>
-    <button id="buttons{colnum}" onclick="removeDict(this)">Delete Colour</button>
+    <button id="buttons{colnum}" onclick="removeDict(this)">Delete Keyword Group</button>
     <br>`;
-var availableCols = []; var availableDicts = [];
+var availableCols = []; var availableDicts = []; 
+var textArea = document.getElementById("textarea");
+var colSelector = document.getElementById("colours");
 let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords, excludeTags, dicts, inDia;
 let colmap = new Map([["red", "red"], ["ora", "orange"], ["yel", "yellow"], ["gre", "green"], ["cya", "cyan"], ["blu", "blue"], ["pur", "purple"], 
     ["pin", "pink"], ["bla", "black"], ["bro", "brown"], ["whi", "white"], ["gra", "gray"], [COL_NONE.substr(0, 3), COL_NONE]]);
@@ -67,7 +69,7 @@ function initVars(){
             saveCookie(cols);
     } else {
         altCols = false;
-        col = document.getElementById("colours").value;
+        col = colSelector.value;
     }
 
     if(document.getElementById("dict").checked){
@@ -175,7 +177,7 @@ function applyDict(str){
 }
 
 function colorizeDialogue(){
-    let str = document.getElementById("textarea").value,
+    let str = textArea.value,
         start = 0, newBegin = 0, out = "",
         startTag = document.getElementById("starttag").value,
         endTag = document.getElementById("endtag").value,
@@ -282,34 +284,43 @@ function colorizeDialogue(){
     document.getElementById("result").innerHTML = "Output successfully copied to clipboard!";
 }
 
+let boldStart = "[b]", boldEnd = "[/b]", italicStart = "[i]", italicEnd = "[/i]", strikeStart = "[s]", strikeEnd = "[/s]",
+    underStart = "[u]", underEnd = "[/u]", colStart = "[color={}]", colEnd = "[/color]";
+
 function onKeyPress(e){
-    if((e.altKey || e.ctrlKey) && e.keyCode == 13){
-        colorizeDialogue();
-        e.preventDefault()
-    }
-    else if((e.altKey || e.ctrlKey) && e.keyCode == 66){
-        document.getElementById("bold").checked = !document.getElementById("bold").checked;
-        e.preventDefault()
-    }
-    else if((e.altKey || e.ctrlKey) && e.keyCode == 73){
-        document.getElementById("italic").checked = !document.getElementById("italic").checked;
-        e.preventDefault()
-    }
-    else if((e.altKey || e.ctrlKey) && e.keyCode == 71){
-        document.getElementById("rainbow").checked = !document.getElementById("rainbow").checked;
-        e.preventDefault()
-    }
-    else if((e.altKey || e.ctrlKey) && e.keyCode == 85){
-        document.getElementById("super").checked = !document.getElementById("super").checked;
-        document.getElementById("sub").checked = false;
-        e.preventDefault()
-    }
-    else if((e.altKey || e.ctrlKey) && e.keyCode == 76){
-        document.getElementById("sub").checked = !document.getElementById("sub").checked;
-        document.getElementById("super").checked = false;
-        e.preventDefault()
-    }
-        
+    let selection = getSelectedText(document, textArea);
+    if(e.altKey || e.ctrlKey){
+        switch(e.keyCode){
+            case 13/* enter */:
+                colorizeDialogue();
+                break;
+            case 66/* b */:
+                selection.text = boldStart + selection.text + boldEnd;
+                updateSelection(selection, textArea);
+                break;
+            case 68/* d */:
+                selection.text = colStart.replace("{}", colSelector.value) + selection.text + colEnd;
+                updateSelection(selection, textArea);
+                break;
+            case 71/* g */:
+                break;
+            case 73/* i */:
+                selection.text = italicStart + selection.text + italicEnd;
+                updateSelection(selection, textArea);
+                break;
+            case 83/* s */:
+                selection.text = strikeStart + selection.text + strikeEnd;
+                updateSelection(selection, textArea);
+                break;
+            case 85/* u */:
+                selection.text = underStart + selection.text + underEnd;
+                updateSelection(selection, textArea);
+                break;
+            default:
+                return;
+        }
+        e.preventDefault();
+    }   
 }
 
 //Variable Colour Code
