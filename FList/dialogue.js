@@ -1,6 +1,8 @@
 let colnum = 0; let dictnum = 0;
 let coltag = "C"; let dicttag = "D";
 let COL_NONE = "none";
+let colCookie = "cols";
+let dictCookie = "dicts";
 const coltemplate = `
     <select name="colour" id="colours{colnum}">
         <option value="red">Red</option>
@@ -385,14 +387,14 @@ function stringToCols(str){
     return col;
 }
 
-let colCookie = "cols";
 function saveCols(){
     setCookie(colCookie, colsToString(readCols()));
 }
 
 function loadCols(){
     var colStr = getCookie(colCookie);
-    setCols(stringToCols(colStr));
+    if(!isBlank(colStr))
+        setCols(stringToCols(colStr));
 }
 
 //Variable Dictionary Code
@@ -465,7 +467,6 @@ function setDicts(dicts){
     }
 }
 
-let dictCookie = "dicts";
 function saveDicts(){
     var dictStr;
     readDicts().forEach(element => {
@@ -476,7 +477,8 @@ function saveDicts(){
 
 function loadDicts(){
     var dictStr = getCookie(dictCookie);
-    setDicts(JSON.parse(dictStr));
+    if(!isBlank(dictStr))
+        setDicts(JSON.parse(dictStr));
 }
 //Shared Code
 

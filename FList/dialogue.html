@@ -6,23 +6,58 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" /> 
         <link rel="stylesheet" href="..\Util\default.css">
         <meta charset="utf-8">
-        <title>Dialogue</title>
+        <title>F-List Style Tool 1.2</title>
     </head>
     <body>
         <div class="page-wrap">
-            <h1>Dialogue Colouring</h1>
+            <h1>F-List Style Tool 1.2</h1>
             <p id="info">If you click on 'Colorize!', the text will be f-chat formatted for the dialogue!<br />
                 Per Default, the effect is only applied onto dialogue between two " marks. This can be changed under 'Advanced Options'.</p>
             <button type="button" class="collapsible">Shortcuts</button>
             <div class="content">
-                These Shortcuts will create the respective tags over the selected letters!
+                <span class="bold">Colorize!:</span> alt/ctrl + enter <br />
+                These Shortcuts will create the respective tags over the selected letters, or where your cursor currently rests!
                 <span class="bold">Colour:</span> alt/ctrl + d <br />
                 <span class="bold">Bold:</span> alt/ctrl + b <br />
                 <span class="bold">Italic:</span> alt/ctrl + i <br />
                 <span class="bold">Rainbow:</span> alt/ctrl + g <br />
                 <span class="bold">Underline:</span> alt/ctrl + u <br />
                 <span class="bold">Strike:</span> alt/ctrl + s <br />
-            </div> <br/><br/>
+            </div>
+            <button type="button" class="collapsible">Changelog</button>
+            <div class="content">
+                <h4>Keyword Highlighting Update (1.2)</h4>
+                <ul>
+                    <li>Added 'None' as a selectable colour, in case no colouring is wanted.</li>
+                    <li>Added a Character and a Word count to the textarea.</li>
+                    <li>Reworked Shortcuts: they now insert the respective tag at the cursor or over the selected text.
+                        <ul><li>Colorize Shortcut left untouched.</li></ul>
+                    </li>
+                    <li>Added Keyword Highlighting, supporting bold, italic, underline, strikethrough and single colours.
+                        <ul><li>Multiple different keyword highlighting rules are possible.</li>
+                        <li>This can be saved to Cookies via a button press.</li></ul>
+                    </li>
+                    <li>Made Changelog public.</li>
+                </ul>
+                <h4>Custom Colouring Update (1.1)</h4>
+                <ul>
+                    <li>Moved alternate colouring styles to seperate Collapsible.</li>
+                    <li>Added Ability to either alternate between letter or Words.
+                        <ul><li>New algorithm for letter-colouring to vastly save space.</li></ul></li>
+                    <li>Ability to create a custom colour sequence via a series of dropdowns.
+                        <ul><li>Can be saved to cookies for future repeat visits.</li></ul></li>
+                    <li>Custom Tags can now be multiple characters long.</li>
+                    <li>Option to Exclude tags from tag-based styling under 'Advanced Options'.</li>
+                </ul>
+                <h4>Initial Release (1.0)</h4>
+                <ul>
+                    <li>Basic Tag Functionality via simple, combinable check-boxes. (Bold, Italic, Subtext, Supertext, Underline, Strikethrough)</li>
+                    <li>Basic Colour Functionality via Dropdown.</li>
+                    <li>Ability to either effect entire text or only in-between user-definable Tags under 'Advanced Options'.</li>
+                    <li>Basic 'Rainbow' and 'Gothbow' alternate colouring styles.</li>
+                    <li>Shortcuts to quickly check/uncheck certain options or colorize the dialogue without having to press the respective buttons.</li>
+                </ul>
+            </div><br /><br />
                 
             
             <p class="italic" id="result"></p>
@@ -63,7 +98,7 @@
                 <input type="radio" id="wordmode" name="colourtype" value="1">
                 <label for="wordmode">Words</label><br>  
 
-                <label><input type="checkbox" id="rainbow" title="ctrl/alt + g - overrides colour" onclick="document.getElementById('gothbow').checked = false;document.getElementById('custbow').checked = false;">Rainbow</label>
+                <label><input type="checkbox" id="rainbow" title="Overrides colour" onclick="document.getElementById('gothbow').checked = false;document.getElementById('custbow').checked = false;">Rainbow</label>
                 <label><input type="checkbox" id="gothbow" onclick="document.getElementById('rainbow').checked = false;document.getElementById('custbow').checked = false;">Gothbow</label>
                 <label><input type="checkbox" id="custbow" onclick="document.getElementById('rainbow').checked = false;document.getElementById('gothbow').checked = false;">Custom Colour Sequence</label><br />
 

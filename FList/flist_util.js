@@ -1,5 +1,5 @@
 const rainbowCols = ["red", "orange", "yellow", "green", "cyan", "blue", "purple"];
-const gothCols = ["gray", "white", "black"];
+const gothCols = ["gray", "purple", "blue", "cyan", "black"];
 
 function alternateColourText(col, str) {
     let res = "";
