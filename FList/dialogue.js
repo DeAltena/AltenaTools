@@ -5,6 +5,7 @@ let colCookie = "cols";
 let dictCookie = "dicts";
 const coltemplate = `
     <select name="colour" id="colours{colnum}">
+        <option value="${COL_NONE}">None</option>
         <option value="red">Red</option>
         <option value="orange">Orange</option>
         <option value="yellow">Yellow</option>
@@ -17,7 +18,6 @@ const coltemplate = `
         <option value="brown">Brown</option>
         <option value="white">White</option>
         <option value="gray">Gray</option>
-        <option value="${COL_NONE}">None</option>
     </select>`;
 
 const colourstemplate = `
@@ -127,7 +127,6 @@ function applyDict(str){
     let brk = false;
 
     let text = splitSentence(str), words;
-    console.log(text);
     for(let t = 0; t < text.length; t++){
         for(let d = 0; d < dicts.length; d++){
             if(dicts[d].text === "") continue;
@@ -193,30 +192,33 @@ function colorizeDialogue(){
     
     if(wholeText){
         out += startTags();
-        if(altCols || dicts != [])
+        if(altCols || dicts.length != 0){
+            tmp = str;
             if(altCols)
                 if(affectWords)
-                    out += alternateColourWords(cols, str);
+                    tmp = alternateColourWords(cols, str);
                 else
-                    out += alternateColourLetters(cols, str);
-            if(dicts != [])
-                out += applyDict(str);
-        else
+                    tmp = alternateColourLetters(cols, str);
+            if(dicts.length != 0)
+                tmp = applyDict(tmp);
+            out += tmp;
+        }else{
             out += str;
+        }
         out += endTags();
     } else {
         for(let i = 0; i < str.length; i++) {
             if(str.substr(i, startLen) == startTag && start == 0) {
                 if(excludeTags) {
                     tmp = str.substr(newBegin, i - newBegin + startLen);
-                    if(dicts != []){
+                    if(dicts.length != 0){
                         tmp = applyDict(tmp);
                     }
                     out += tmp
                     newBegin = i + startLen;
                 } else {
                     tmp = str.substr(newBegin, i - newBegin);
-                    if(dicts != []){
+                    if(dicts.length != 0){
                         tmp = applyDict(tmp);
                     }
                     out += tmp;
@@ -226,14 +228,14 @@ function colorizeDialogue(){
 
                 start = 1;
             } else if(str.substr(i, endLen) == endTag && start != 0) {
-                let substring
+                let substring;
                 if(excludeTags) {
                     substring = str.substr(newBegin, i - newBegin);
                 } else {
-                    substring = str.substr(newBegin, i - newBegin + 1);
+                    substring = str.substr(newBegin, i - newBegin + endLen);
                 }
 
-                if(dicts != [] && inDia){
+                if(dicts.length != 0 && inDia){
                     substring = applyDict(substring);
                 }
 
@@ -258,7 +260,7 @@ function colorizeDialogue(){
         }
 
         let substring = str.substr(newBegin);
-        if(dicts != [] && ((inDia && start != 0) || start == 0))
+        if(dicts.length != 0 && ((inDia && start != 0) || start == 0))
             substring = applyDict(substring);
 
         if(start != 0 && altCols)
