@@ -79,7 +79,7 @@ textarea {
 }
 
 .content {
-    padding: 0 18px;
+    padding: 5px 18px;
     display: none;
     overflow: hidden;
     background-color: #343468;

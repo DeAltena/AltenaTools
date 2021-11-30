@@ -95,3 +95,26 @@ function updateSelection(selection, area){
                     + selection.text
                     +  area.value.substring(selection.end, area.value.length);
 }
+
+function setCookie(cname, cvalue) {
+    document.cookie = cname + "=" + cvalue + ";" + ";path=/ ;SameSite=Lax";
+  }
+
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    let spaces = 0;
+    for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+        spaces++;
+        }
+        c = c.substring(spaces);
+        if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+        }
+        spaces = 0;
+    }
+    return "";
+}

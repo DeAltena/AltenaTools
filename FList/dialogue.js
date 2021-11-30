@@ -41,7 +41,7 @@ let colmap = new Map([["red", "red"], ["ora", "orange"], ["yel", "yellow"], ["gr
 
 initCollapsibles();
 document.addEventListener('keydown', onKeyPress)
-restoreFromCookie();
+loadCols(); loadDicts();
 
 function initVars(){
     bold = document.getElementById("bold").checked;
@@ -64,9 +64,7 @@ function initVars(){
     } else if(document.getElementById("custbow").checked){
         altCols = true;
         affectWords = document.getElementById("wordmode").checked;
-        cols = readCols(coltag, availableCols);
-        if(document.getElementById("savetocookies").checked)
-            saveCookie(cols);
+        cols = readCols();
     } else {
         altCols = false;
         col = colSelector.value;
@@ -326,16 +324,16 @@ function onKeyPress(e){
 //Variable Colour Code
 
 function addColour(){
-    let col = readCols(coltag, availableCols);
+    let col = readCols();
 
     document.getElementById("colourlist").innerHTML += colourstemplate.replaceAll("{colnum}", coltag+colnum);
     availableCols.push(colnum);
     colnum++;
-    setFromCols(col);
+    setCols(col);
 }
 
 function removeColour(btn){
-    let col = readCols(coltag, availableCols);
+    let col = readCols();
     let id = parseInt(btn.id.substr("buttons".length + coltag.length));
     
     col.splice(availableCols.indexOf(id), 1);
@@ -345,10 +343,10 @@ function removeColour(btn){
     );
     availableCols.splice(availableCols.indexOf(id), 1);
 
-    setFromCols(col);
+    setCols(col);
 }
 
-function setFromCols(col){
+function setCols(col){
     let i = 0;
     for(; i < availableCols.length; i++){
         if(i >= col.length) {document.getElementById(`colours${coltag}${availableCols[i]}`).value = "red"; continue;}
@@ -359,6 +357,42 @@ function setFromCols(col){
         addColour();
         document.getElementById(`colours${coltag}${availableCols[i]}`).value = col[i];
     }
+}
+
+function readCols(){
+    let arr = [];
+    for(let i = 0; i < availableCols.length; i++){
+        arr.push(document.getElementById(`colours${coltag}${availableCols[i]}`).value);
+    }
+    return arr;
+}
+
+function colsToString(col) {
+    let str = "";
+    for(let i = 0; i < col.length; i++){
+        str += col[i].substr(0, 3) + " ";
+    }
+    str = str.substr(0, str.length-1);
+    return str;
+}
+
+function stringToCols(str){
+    let col = [];
+    let tmp = str.split(" ");
+    for(let i = 0; i < tmp.length; i++){
+        col.push(colmap.get(tmp[i]));
+    }
+    return col;
+}
+
+let colCookie = "cols";
+function saveCols(){
+    setCookie(colCookie, colsToString(readCols()));
+}
+
+function loadCols(){
+    var colStr = getCookie(colCookie);
+    setCols(stringToCols(colStr));
 }
 
 //Variable Dictionary Code
@@ -431,47 +465,20 @@ function setDicts(dicts){
     }
 }
 
+let dictCookie = "dicts";
+function saveDicts(){
+    var dictStr;
+    readDicts().forEach(element => {
+        dictStr += JSON.stringify(element);
+    });
+    setCookie(dictCookie, dictStr);
+}
+
+function loadDicts(){
+    var dictStr = getCookie(dictCookie);
+    setDicts(JSON.parse(dictStr));
+}
 //Shared Code
-
-function readCols(tag, avail){
-    let arr = [];
-    for(let i = 0; i < avail.length; i++){
-        arr.push(document.getElementById(`colours${tag}${avail[i]}`).value);
-    }
-    return arr;
-}
-
-function colsToString(col) {
-    let str = "";
-    for(let i = 0; i < col.length; i++){
-        str += col[i].substr(0, 3) + " ";
-    }
-    str = str.substr(0, str.length-1);
-    return str;
-}
-
-function stringToCols(str){
-    let col = [];
-    let tmp = str.split(" ");
-    for(let i = 0; i < tmp.length; i++){
-        col.push(colmap.get(tmp[i]));
-    }
-    return col;
-}
-
-
-
-function saveCookie(col){
-    document.cookie = `cols=${colsToString(col)}; SameSite=Lax`;
-}
-
-function restoreFromCookie(){
-    let col = document.cookie.substr(5);
-    col = col.split(";")[0];
-
-    if(!isBlank(document.cookie))
-        setFromCols(stringToCols(col));
-}
 
 function updateCount(area){
     document.getElementById("chars").innerHTML = area.value.length;
