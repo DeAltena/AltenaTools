@@ -5,7 +5,7 @@ let colCookie = "cols";
 let dictCookie = "dicts";
 const coltemplate = `
     <select name="colour" id="colours{colnum}">
-        <option value="${COL_NONE}">None</option>
+        <option value="${COL_NONE}" selected="selected">None</option>
         <option value="red">Red</option>
         <option value="orange">Orange</option>
         <option value="yellow">Yellow</option>
@@ -443,7 +443,7 @@ function setDicts(dicts){
     let i = 0;
     for(; i < availableDicts.length; i++){
         if(i >= dicts.length) {
-            document.getElementById(`colours${dicttag}${availableDicts[i]}`).value = "red"; 
+            document.getElementById(`colours${dicttag}${availableDicts[i]}`).value = COL_NONE; 
             document.getElementById(`italic${dicttag}${availableDicts[i]}`).checked = false; 
             document.getElementById(`bold${dicttag}${availableDicts[i]}`).checked = false; 
             document.getElementById(`strikethrough${dicttag}${availableDicts[i]}`).checked = false; 
@@ -470,8 +470,9 @@ function setDicts(dicts){
 }
 
 function saveDicts(){
-    var dictStr;
+    var dictStr = "";
     readDicts().forEach(element => {
+        console.log(element)
         dictStr += JSON.stringify(element);
     });
     setCookie(dictCookie, dictStr);
