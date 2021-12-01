@@ -63,7 +63,11 @@ function splitSentence(str){
 }
 
 function splitDict(dict){
-    return dict.text.split(",");
+    var ret = [];
+    dict.text.split(",").forEach(element => {
+        ret.push(element.trim())
+    });;
+    return ret;
 }
 
 function isSameWord(str1, str2){
