@@ -2,16 +2,17 @@ const rainbowCols = ["red", "orange", "yellow", "green", "cyan", "blue", "purple
 const gothCols = ["gray", "purple", "blue", "cyan", "black"];
 
 function alternateColourText(col, str) {
-    let res = "";
+    let res = `[color=${col[0]}]`;
     for (let i = 0; i < str.length; i++){
         if(str[i] == " ") {
             res += str[i];
             continue;
         }
+        if(i % col.length == 0) continue;
         res += `[color=${col[i % col.length]}]${str[i]}[/color]`;
     }
 
-    return res;
+    return res+`[/color]`;
 }
 
 function alternateColourLetters(col, str) {
@@ -56,11 +57,15 @@ function alternateColourLetters(col, str) {
 
 function alternateColourWords(col, str) {
     let words = str.split(" ");
-    let res = "";
+    let res = `[color=${col[0]}]`;
     for (let i = 0; i < words.length; i++){
+        if(words[i] == " " || i % col.length == 0) {
+            res += words[i] + " ";
+            continue;
+        }
         res += `[color=${col[i % col.length]}]${words[i]}[/color] `;
     }
     res = res.substr(0, res.length-1);
 
-    return res;
+    return res+`[/color]`;
 }
