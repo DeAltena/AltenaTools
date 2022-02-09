@@ -16,6 +16,24 @@ function selectText(node) {
     }
 }
 
+function selectTextRange(node, start, end) {
+    if( node.createTextRange ) {
+        var selRange = node.createTextRange();
+        selRange.collapse(true);
+        selRange.moveStart('character', start);
+        selRange.moveEnd('character', end);
+        selRange.select();
+        node.focus();
+    } else if( node.setSelectionRange ) {
+        node.focus();
+        node.setSelectionRange(start, end);
+    } else if( typeof node.selectionStart != 'undefined' ) {
+        node.selectionStart = start;
+        node.selectionEnd = end;
+        node.focus();
+    }
+  }
+
 function copyToClipboard(str){
     navigator.clipboard.writeText(str).then(function() {
         console.log('Async: Copying to clipboard was successful!');
@@ -94,10 +112,15 @@ function getSelectedText(doc, area){
     return "";
 }
 
-function updateSelection(selection, area){
+function updateSelection(selection, area, cursor_pos){
     area.value = area.value.substring(0, selection.start) 
                     + selection.text
                     +  area.value.substring(selection.end, area.value.length);
+    if(cursor_pos != -1) {
+        selectTextRange(area, cursor_pos, cursor_pos)
+    } else {
+        selectTextRange(area, selection.start, selection.start + selection.text.length)
+    }
 }
 
 function setCookie(cname, cvalue) {

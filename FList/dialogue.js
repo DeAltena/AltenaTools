@@ -291,32 +291,43 @@ let boldStart = "[b]", boldEnd = "[/b]", italicStart = "[i]", italicEnd = "[/i]"
 
 function onKeyPress(e){
     let selection = getSelectedText(document, textArea);
+    let cursor_pos = -1;
     if(e.altKey || e.ctrlKey){
         switch(e.keyCode){
             case 13/* enter */:
                 colorizeDialogue();
                 break;
             case 66/* b */:
+                if(selection.text.length == 0)
+                    cursor_pos = selection.start + boldStart.length
                 selection.text = boldStart + selection.text + boldEnd;
-                updateSelection(selection, textArea);
+                updateSelection(selection, textArea, cursor_pos);
                 break;
             case 68/* d */:
+                if(selection.text.length == 0)
+                    cursor_pos = selection.start + colStart.replace("{}", colSelector.value).length
                 selection.text = colStart.replace("{}", colSelector.value) + selection.text + colEnd;
-                updateSelection(selection, textArea);
+                updateSelection(selection, textArea, cursor_pos);
                 break;
             case 71/* g */:
                 break;
             case 73/* i */:
+                if(selection.text.length == 0)
+                    cursor_pos = selection.start + italicStart.length
                 selection.text = italicStart + selection.text + italicEnd;
-                updateSelection(selection, textArea);
+                updateSelection(selection, textArea, cursor_pos);
                 break;
             case 83/* s */:
+                if(selection.text.length == 0)
+                    cursor_pos = selection.start + strikeStart.length
                 selection.text = strikeStart + selection.text + strikeEnd;
-                updateSelection(selection, textArea);
+                updateSelection(selection, textArea, cursor_pos);
                 break;
             case 85/* u */:
+                if(selection.text.length == 0)
+                    cursor_pos = selection.start + underStart.length
                 selection.text = underStart + selection.text + underEnd;
-                updateSelection(selection, textArea);
+                updateSelection(selection, textArea, cursor_pos);
                 break;
             default:
                 return;
