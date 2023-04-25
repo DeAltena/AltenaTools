@@ -37,7 +37,7 @@ const dicttemplate = `
 var availableCols = []; var availableDicts = []; 
 var textArea = document.getElementById("textarea");
 var colSelector = document.getElementById("colours");
-let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords, excludeTags, dicts, inDia;
+let col, cols, bold, italic, underline, strikethrough, altCols, sub, sup, wholeText, affectWords, excludeTags, dicts, inDia, start_me;
 let colmap = new Map([["red", "red"], ["ora", "orange"], ["yel", "yellow"], ["gre", "green"], ["cya", "cyan"], ["blu", "blue"], ["pur", "purple"], 
     ["pin", "pink"], ["bla", "black"], ["bro", "brown"], ["whi", "white"], ["gra", "gray"], [COL_NONE.substr(0, 3), COL_NONE]]);
 
@@ -54,6 +54,7 @@ function initVars(){
     sup = document.getElementById("super").checked;
     wholeText = document.getElementById("tags").checked;
     excludeTags = document.getElementById("excludeTags").checked;
+    start_me = document.getElementById("start_me").checked;
 
     if(document.getElementById("rainbow").checked){
         altCols = true;
@@ -185,6 +186,8 @@ function colorizeDialogue(){
         tmp = "";
 
     initVars();
+    if(start_me)
+        out = '\\me '
     
     if(startLen > 1 || endLen > 1) {
         excludeTags = true;

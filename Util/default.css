@@ -12,12 +12,17 @@ button, input, select {
     background-color: #2a2a54;
 }
 
+textarea {
+    background-color: #191932;
+}
+
 #dialogueOutput {
     word-break: break-all;
 }
 
-textarea {
-    background-color: #191932;
+.centre {
+    text-align: center;
+    display: block;
 }
 
 .maininput {
@@ -40,6 +45,14 @@ textarea {
 
 .italic {
     font-style: italic;
+}
+
+.big {
+    font-size: 20px;
+}
+
+.bigger {
+    font-size: 24px;
 }
 
 .page-wrap {
@@ -75,7 +88,7 @@ textarea {
 }
 
 .active, .collapsible:hover {
-    background-color: #2a2a54;
+    background-color: #3a3a6c;
 }
 
 .content {
@@ -83,4 +96,33 @@ textarea {
     display: none;
     overflow: hidden;
     background-color: #343468;
+}
+
+.visible-content {
+    padding: 5px 18px;
+    display: block;
+    overflow: hidden;
+    background-color: #343468;
+}
+
+.image {
+    margin: 2px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+  }
+  
+.image:hover {
+    border: 1px solid #777;
+}
+
+.image img {
+    width: 100%;
+    height: auto;
+}
+
+.right {
+    float: right;
 }

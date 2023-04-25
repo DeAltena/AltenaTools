@@ -16,7 +16,7 @@
             <button type="button" class="collapsible">Shortcuts</button>
             <div class="content">
                 <span class="bold">Colorize!:</span> alt/ctrl + enter <br />
-                These Shortcuts will create the respective tags over the selected letters, or where your cursor currently rests!
+                These Shortcuts will create the respective tags over the selected letters, or where your cursor currently rests!<br />
                 <span class="bold">Colour:</span> alt/ctrl + d <br />
                 <span class="bold">Bold:</span> alt/ctrl + b <br />
                 <span class="bold">Italic:</span> alt/ctrl + i <br />
@@ -110,9 +110,14 @@
             </div>
             <button type="button" class="collapsible">Advanced Options</button>
             <div class="content">
-                <label for="starttag">Starting Tag: </label><input type="text" id="starttag" name="starttag" value='"'><br/>
-                <label for="endtag">Ending Tag: </label><input type="text" id="endtag" name="endtag" value='"'><br/>
+                <label><input type="checkbox" id="start_me">Insert \me at the beginning</label><br/>
+                <label for="starttag">Standard Starting Tag: </label><input type="text" id="starttag" name="starttag" value='"' size='4'>
+                <label for="endtag">Standard Ending Tag: </label><input type="text" id="endtag" name="endtag" value='"' size='4'><br/>
                 <label><input type="checkbox" id="excludeTags" title="Excludes the Tags from the formatting">Exclude Tags</label><br/>
+                <div id="taglist">
+                    
+                </div>
+                <button onclick="addTag()">Add Alternative Tags!</button><br/>
             </div>
             <button type="button" class="collapsible">Keyword Highlighting</button>
             <div class="content">

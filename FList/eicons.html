@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<script src="..\Util\text_util.js"></script>
+<script src="eicons.js"></script>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" /> 
+    <link rel="stylesheet" href="..\Util\default.css">
+    <meta charset="utf-8">  
+    <title>EIcon Gallery</title>
+  </head>
+  <body onload="init()">
+    <div class="centre big">
+        <p class="italic">Use Middle Click to delete EIcon entries or groups!</p><br>
+
+        <label for="eiconname" class="big">EIcon Name:</label>
+        <input type="text" class="big" id="eiconname" name="eiconname" value="" size='32'><br>
+        <label for="eicongroup" class="big">EIcon Group:</label>
+        <input type="text" class="big" id="eicongroup" name="eicongroup" value="Default" size='32'><br>
+        <button class="big" onclick="addEIcon()">Add EIcon!</button>
+    </div>
+    <br>
+    <div class="gallery" id="gallery">
+        <button type="button" class="collapsible"><p class="big">Default</p></button>
+        <div class="visible-content" id="default">
+            
+        </div>
+    </div>
+
+    
+  </body>
+</html>
