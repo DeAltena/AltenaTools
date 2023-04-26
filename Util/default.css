@@ -86,6 +86,8 @@ textarea {
     text-align: left;
     outline: none;
     font-size: 15px;
+    position: relative;
+    margin: 0px;
 }
 
 .active, .collapsible:hover {
@@ -129,6 +131,14 @@ textarea {
     display: block;
 }
 
+.image:hover .select {
+    display: block;
+}
+
+.selected {
+    border: 1px solid #bebeeb;
+}
+
 .wrapper {
     width: 80%;
     overflow: hidden; /* add this to contain floated children */
@@ -149,4 +159,62 @@ textarea {
     background: rgba(140, 140, 180, 0.5);
     padding: 0px 0px 1px 1px;
     display: none;
+}
+
+.select {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    border-radius: 4px;
+    background: rgba(140, 140, 180, 0.5);
+    padding: 0px 0px 1px 1px;
+    display: none;
+    width: 20px;
+    height: 20px;
+}
+
+.select:checked {
+    display: block;
+}
+
+.gallery {
+    
+}
+
+.deletegroup {
+    position: absolute;
+    right: 10px;
+    top: 9px;
+    border-radius: 4px;
+    background: #343468;
+    padding: 0px 0px 1px 1px;
+    display: block;
+    cursor: pointer;
+}
+
+.renamegroup {
+    position: absolute;
+    right: 40px;
+    top: 9px;
+    border-radius: 4px;
+    background: #343468;
+    padding: 0px 0px 1px 1px;
+    display: block;
+    cursor: pointer;
+}
+
+.ui-widget-header {
+    background: #2a2a54;
+}
+
+.ui-widget-content {
+    background: #343468;
+}
+
+#groupselect{
+    width: 268px;
+}
+
+#group_change_name {
+    width: 260px;
 }

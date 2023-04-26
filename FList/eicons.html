@@ -1,14 +1,25 @@
 <!DOCTYPE html>
-<script src="..\Util\text_util.js"></script>
-<script src="eicons.js"></script>
+
 <html>
   <head>
+    <script src="..\Util\text_util.js"></script>
+    <script src="eicons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" /> 
     <link rel="stylesheet" href="..\Util\default.css">
     <meta charset="utf-8">  
     <title>EIcon Gallery</title>
   </head>
   <body onload="init()">
+    <div class="big centre" id="groupdialog" title="Select or enter a new Group!">
+      <select class="big" id="groupselect" >
+      </select><br>
+      <input type="text" class="big" id="group_change_name" value="" placeholder="Group Name"><br><br>
+      <button class="big" id="change_group_dialog_btn" onclick="changeGroupCont()">Select Group</button>
+    </div>
+
     <div class="wrapper centre">
       <div class="left big">
         <p class="italic">The EIcon tag is copied to your clipboard when clicking on an icon.</p>
@@ -22,15 +33,30 @@
       </div>
 
       <div class="right big">
-        In Development
+        <p>Mass Actions</p><br>
+        <button class="big" id="changegroup" onclick="changeGroup()">Change Group</button><br>
+        <button class="big" id="deleteEicons" onclick="deleteEicons()">Delete EIcons</button><br>
       </div>
 
     </div>
     
     <br>
     <div class="gallery" id="gallery">
-        <button type="button" class="collapsible"><p class="big">Default</p></button>
+        
+        <button type="button" class="collapsible">
+          <div class="deletegroup" onclick="deleteGroup(this, 'default')">❌</div>
+          <div class="renamegroup" onclick="renameGroup(this, 'default')">✏️</div>
+          <p class="big">Default</p>
+        </button>
+
         <div class="visible-content" id="default">
+          <div class="image">
+            <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/test.gif" alt="Failed to load!" width="100" height="100"
+              onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
+            <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
+            <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
+          </div>
+          
         </div>
     </div>
 

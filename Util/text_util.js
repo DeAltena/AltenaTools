@@ -123,9 +123,22 @@ function updateSelection(selection, area, cursor_pos){
     }
 }
 
+function capitalize(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function capitalizeWords(string){
+    let words = string.split(" ");
+    let ret = "";
+    for (const word of words){
+        ret += " " + capitalize(word);
+    }
+    return ret.slice(1);
+}
+
 function setCookie(cname, cvalue) {
     document.cookie = cname + "=" + cvalue + ";" + ";path=/ ;SameSite=Lax";
-  }
+}
 
 function getCookie(cname) {
     let name = cname + "=";
