@@ -21,6 +21,7 @@ textarea {
 }
 
 .centre {
+    margin: auto;
     text-align: center;
     display: block;
 }
@@ -112,6 +113,7 @@ textarea {
     width: 100px;
     height: 100px;
     cursor: pointer;
+    position: relative;
   }
   
 .image:hover {
@@ -123,6 +125,28 @@ textarea {
     height: auto;
 }
 
+.image:hover .delete {
+    display: block;
+}
+
+.wrapper {
+    width: 80%;
+    overflow: hidden; /* add this to contain floated children */
+}
+.left {
+    float: left;
+    width: 70%;
+}
 .right {
     float: right;
+}
+
+.delete {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    border-radius: 4px;
+    background: rgba(140, 140, 180, 0.5);
+    padding: 0px 0px 1px 1px;
+    display: none;
 }

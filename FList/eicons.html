@@ -9,21 +9,28 @@
     <title>EIcon Gallery</title>
   </head>
   <body onload="init()">
-    <div class="centre big">
+    <div class="wrapper centre">
+      <div class="left big">
         <p class="italic">The EIcon tag is copied to your clipboard when clicking on an icon.</p>
-        <p class="italic">Use Middle Click to delete EIcon entries or groups!</p><br>
+        <p class="italic">Multiple EIcons can be entered, seperated by ','. [eicon] tags are stripped automatically.</p><br>
 
         <label for="eiconname" class="big">EIcon Name:</label>
         <input type="text" class="big" id="eiconname" name="eiconname" value="" size='32'><br>
         <label for="eicongroup" class="big">EIcon Group:</label>
         <input type="text" class="big" id="eicongroup" name="eicongroup" value="Default" size='32'><br>
-        <button class="big" onclick="addEIcon()">Add EIcon!</button>
+        <button class="big" id="addeicon" onclick="addEIcon()">Add EIcon!</button>
+      </div>
+
+      <div class="right big">
+        In Development
+      </div>
+
     </div>
+    
     <br>
     <div class="gallery" id="gallery">
         <button type="button" class="collapsible"><p class="big">Default</p></button>
         <div class="visible-content" id="default">
-            
         </div>
     </div>
 

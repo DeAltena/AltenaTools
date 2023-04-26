@@ -1,33 +1,65 @@
 const img_template = `
-    <img src="https://static.f-list.net/images/eicon/{name}.gif" alt="Failed to load!" width="100" height="100">
+    <img loading="lazy" title="{name}" src="https://static.f-list.net/images/eicon/{name}.gif" alt="Failed to load!" width="100" height="100"
+        onclick="navigator.clipboard.writeText('[eicon]{name}[/eicon]');">
+    <div class="delete" onclick="deleteEicon(this, '{name}', '{group}')">❌</div>
 `;
 
 const collapsible_template = `
     <p class="big">{group}</p>
 `;
 
-const cookie_name = 'eicons'
+const cookie_name = 'eicons';
 
 eicons = {
     "default" : []
-}
+};
 
 function init() {
+    let submit = (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            document.getElementById("addeicon").click();
+        }
+    };
+
+    document.getElementById("eiconname").addEventListener("keypress", submit);
+    document.getElementById("eicongroup").addEventListener("keypress", submit);
+
     initCollapsibles();
-    loadCookie()
+    loadCookie();
 }
 
+const regexp_tags = /\[eicon\](.+?)\[\/eicon\],?\s*/gm;
+const regexp_normal = /([^\[\],]+)\s*,?\s*/gm;
 function addEIcon() {
-    let name = document.getElementById("eiconname").value;
+    let names = []
+    let name_raw = document.getElementById("eiconname").value.trim();
     let group = document.getElementById("eicongroup").value;
-    addImage(name, group);
 
-    let eicon_group = eicons[group.toLowerCase()]
-    if (eicon_group === undefined) {
-        eicon_group = []
-        eicons[group.toLowerCase()] = eicon_group
+    let matches = name_raw.matchAll(regexp_tags);
+    for(const match of matches) {
+        names.push(match[1].trim())
     }
-    eicon_group.push(name);
+
+    if (names.length === 0) {
+        let matches = name_raw.matchAll(regexp_normal);
+        for(const match of matches) {
+            names.push(match[1].trim())
+        }
+    }
+
+
+    for(const name of names) {
+        addImage(name, group);
+
+        let eicon_group = eicons[group.toLowerCase()]
+        if (eicon_group === undefined) {
+            eicon_group = []
+            eicons[group.toLowerCase()] = eicon_group
+        }
+        eicon_group.push(name);
+    }
+   
     saveCookie();
 }
 
@@ -35,20 +67,7 @@ function addImage(name, group) {
     const lower_group = group.toLowerCase();
     let div = document.createElement("div");
     div.classList.add("image");
-    div.onmousedown = e => {
-        if (e.button === 0) {
-            navigator.clipboard.writeText(`[eicon]${name}[/eicon]`);
-        } else if (e.button === 1) {
-            if (confirm(`Do you want to delete the EIcon '${name}'?`)) {
-                eicons[lower_group].splice(eicons[lower_group].indexOf(name), 1);
-                document.getElementById(lower_group).removeChild(div);
-                saveCookie();
-            }
-
-            e.preventDefault();
-        }
-    }
-    div.innerHTML = img_template.replaceAll("{name}", name);
+    div.innerHTML = img_template.replaceAll("{name}", name).replaceAll("{group}", lower_group);
 
     let group_node = document.getElementById(lower_group);
 
@@ -98,7 +117,7 @@ function collapseEvent(collapsible){
             content.style.display = "block";
         }
     });
-}
+}   
 
 function initCollapsibles(){
     var visibles = document.getElementsByClassName("visible-content");
@@ -111,6 +130,14 @@ function initCollapsibles(){
 
     for (i = 0; i < coll.length; i++) {
         collapseEvent(coll[i]);
+    }
+}
+
+function deleteEicon(node, name, lower_group){
+    if (confirm(`Do you want to delete the EIcon '${name}'?`)) {
+        eicons[lower_group].splice(eicons[lower_group].indexOf(name), 1);
+        document.getElementById(lower_group).removeChild(node.parentNode);
+        saveCookie();
     }
 }
 
