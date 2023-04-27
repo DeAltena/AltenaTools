@@ -21,7 +21,8 @@ textarea {
 }
 
 .centre {
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
     text-align: center;
     display: block;
 }
@@ -108,23 +109,31 @@ textarea {
     background-color: #343468;
 }
 
-.image {
+.image-tmp {
     margin: 2px;
     border: 1px solid #ccc;
     float: left;
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     cursor: pointer;
     position: relative;
-  }
-  
-.image:hover {
-    border: 1px solid #777;
+    overflow: hidden;
+}
+
+.image {
+    border: 1px solid #ccc;
+    cursor: pointer;
+    position: relative;
+    padding: 0px;
 }
 
 .image img {
-    width: 100%;
-    height: auto;
+    float: left;
+    display: block;
+}
+  
+.image:hover {
+    border: 1px solid #777;
 }
 
 .image:hover .delete {

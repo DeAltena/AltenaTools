@@ -8,7 +8,7 @@ const img_template = `
 const cookie_name = 'eicons';
 
 eicons = {
-    "default" : []
+
 };
 
 function init() {
@@ -62,18 +62,46 @@ function addEIcon() {
     saveCookie();
 }
 
+function appendChildToTable(table, child, group) {
+    let last_row = table.lastChild;
+
+    if(last_row.childElementCount >= getEntriesPerRow(group) - 1) {
+        last_row = document.createElement("tr");
+        table.appendChild(last_row);
+    }
+    last_row.appendChild(child);
+}
+
 function addImage(name, group) {
-    let div = document.createElement("div");
-    div.classList.add("image");
-    div.id = name.toLowerCase();
-    div.innerHTML = img_template.replaceAll("{name}", name).replaceAll("{group}", group.toLowerCase());
-    getOrCreateGroup(group).appendChild(div);
+    let entry = document.createElement("td");
+    entry.classList.add("image");
+    entry.id = name.toLowerCase();
+    entry.innerHTML = img_template.replaceAll("{name}", name).replaceAll("{group}", group.toLowerCase());
+    let table_node = getOrCreateGroup(group);
+    appendChildToTable(table_node, entry, group);
+}
+
+const entry_width = 104;
+let entries_per_row = -1;
+function getEntriesPerRow(group_name) {
+    if (entries_per_row <= 0) {
+        const group_node = document.getElementById(group_name.toLowerCase());
+        const style = getComputedStyle(group_node);
+
+        let total_width = window.innerWidth;
+        let padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+
+        let width = total_width - padding;
+        entries_per_row = width / entry_width;
+    }
+
+    return entries_per_row;
 }
 
 function getOrCreateGroup(name) {
     lower_name = name.toLowerCase();
 
-    group_node = document.getElementById(lower_name);
+    let group_node = document.getElementById(lower_name);
 
     if(group_node != null) {
         return group_node;
@@ -82,7 +110,7 @@ function getOrCreateGroup(name) {
     let del = document.createElement("div");
     del.classList.add("deletegroup");
     del.onclick = (e) => {
-        deleteGroup(del, lower_name);
+        deleteGroup(btn, lower_name);
         e.stopPropagation();
     }
     del.innerText = "❌";
@@ -106,9 +134,13 @@ function getOrCreateGroup(name) {
     btn.appendChild(edit);
     btn.appendChild(title);
     
-    group_node = document.createElement("div");
+    group_node = document.createElement("table");
     group_node.classList.add("content");
+    group_node.classList.add("centre");
     group_node.id = lower_name;
+
+    let row_node = document.createElement("tr");
+    group_node.appendChild(row_node);
 
     collapseEvent(btn);
 
@@ -150,11 +182,27 @@ function initCollapsibles(){
 
 let should_confirm = true
 
+function fillRow(row_node) {
+    let next_row = row_node.nextElementSibling;
+    if(next_row != null) {
+        row_node.appendChild(next_row.firstChild);
+        if(next_row.childElementCount <= 0) {
+            next_row.parentNode.removeChild(next_row);
+        }
+    } else {
+        if(row_node.childElementCount <= 0) {
+            row_node.parentNode.removeChild(row_node);
+        }
+    }
+}
+
 function deleteEicon(node, name, lower_group){
     if (!should_confirm || confirm(`Do you want to delete the EIcon '${name}'?`)) {
         eicons[lower_group].splice(eicons[lower_group].indexOf(name), 1);
-        document.getElementById(lower_group).removeChild(node.parentNode);
+        let row_node = node.parentNode.parentNode;
+        row_node.removeChild(node.parentNode);
         saveCookie();
+        fillRow(row_node);
     }
 }
 
@@ -235,8 +283,6 @@ function changeGroup() {
         return;
     }
 
-    //var group = prompt(`What group do you want ${selected_images.length} images to be assigned to?`);
-
     select = document.getElementById("groupselect");
     for(const group_name in eicons) {
         let opt = document.createElement("option");
@@ -264,8 +310,12 @@ function changeGroupCont(){
     let group_node = getOrCreateGroup(group);
 
     for(const image of getSelectedImages()) {
-        old_group = image.parentNode.id;
-        group_node.appendChild(image);
+        old_row = image.parentNode;
+        old_group = old_row.parentNode.id;
+        
+        appendChildToTable(group_node, image, group);
+        fillRow(old_row);
+
         image.querySelector("input").checked = false;
 
         eicons[old_group].splice(eicons[old_group].indexOf(image.id), 1);
