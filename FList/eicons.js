@@ -1,11 +1,9 @@
-const img_template = `
-    <img loading="lazy" title="{name}" src="https://static.f-list.net/images/eicon/{name}.gif" alt="Failed to load!" width="100" height="100"
-        onclick="navigator.clipboard.writeText('[eicon]{name}[/eicon]');">
-    <div class="delete" onclick="deleteEicon(this, '{name}', '{group}')">❌</div>
-    <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
-`;
+const src_link_template = "https://static.f-list.net/images/eicon/{name}.gif";
+const clipboard_template = "[eicon]{name}[/eicon]";
 
 const cookie_name = 'eicons';
+const protected_class = 'protected';
+const line_break = '[br]';
 
 eicons = {
 
@@ -13,6 +11,7 @@ eicons = {
 
 function init() {
     $("#groupdialog").hide();
+    $("#mosaicdialog").hide();
 
     let submit = (event) => {
         if (event.key === "Enter") {
@@ -28,7 +27,7 @@ function init() {
     loadCookie();
 }
 
-const regexp_tags = /\[eicon\](.+?)\[\/eicon\],?\s*/gm;
+const regexp_tags = /\[eicon\](.+?)\[\/eicon\],?([\r\n]+)?/gm;
 const regexp_normal = /([^\[\],]+)\s*,?\s*/gm;
 function addEIcon() {
     let names = []
@@ -62,44 +61,63 @@ function addEIcon() {
     saveCookie();
 }
 
-function appendChildToTable(table, child, group) {
-    let last_row = table.lastChild;
-
-    if(last_row.childElementCount >= getEntriesPerRow(group) - 1) {
-        last_row = document.createElement("tr");
-        table.appendChild(last_row);
+function getRowWidth(row) {
+    let row_width = 0;
+    for(const child of Array.from(row.children)){
+        row_width += child.colSpan;
     }
-    last_row.appendChild(child);
+    return row_width;
+}
+
+function getFirstFreeRow(table, width){
+    for(const row of Array.from(table.children)){
+        if(getRowWidth(row) <= getEntriesPerRow() - width) {
+            return row;
+        }
+    }
+    let new_row = document.createElement("tr");
+    table.appendChild(new_row);
+    return new_row;
+}
+
+function appendChildToTable(table, child) {
+    let row = getFirstFreeRow(table, 1);
+    row.appendChild(child);
 }
 
 function addImage(name, group) {
     let entry = document.createElement("td");
     entry.classList.add("image");
     entry.id = name.toLowerCase();
-    entry.innerHTML = img_template.replaceAll("{name}", name).replaceAll("{group}", group.toLowerCase());
+
+    let img = document.createElement("img");
+    img.loading = "lazy";
+    img.title = name;
+    img.src = src_link_template.replaceAll("{name}", name);
+    img.alt = "Failed to Load!";
+    img.width = 100;
+    img.height = 100;
+
+    addFunctionality(entry, name, group.toLowerCase(), clipboard_template.replaceAll("{name}", name));
+
+    entry.appendChild(img);
     let table_node = getOrCreateGroup(group);
-    appendChildToTable(table_node, entry, group);
+    appendChildToTable(table_node, entry);
 }
 
 const entry_width = 104;
 let entries_per_row = -1;
-function getEntriesPerRow(group_name) {
+function getEntriesPerRow() {
     if (entries_per_row <= 0) {
-        const group_node = document.getElementById(group_name.toLowerCase());
-        const style = getComputedStyle(group_node);
-
-        let total_width = window.innerWidth;
-        let padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
-
-        let width = total_width - padding;
-        entries_per_row = width / entry_width;
+        let width = window.innerWidth - 36;
+        entries_per_row = Math.trunc(width / entry_width);
     }
 
     return entries_per_row;
 }
 
 function getOrCreateGroup(name) {
-    lower_name = name.toLowerCase();
+    lower_name = name.toLowerCase().trim();
 
     let group_node = document.getElementById(lower_name);
 
@@ -183,26 +201,34 @@ function initCollapsibles(){
 let should_confirm = true
 
 function fillRow(row_node) {
-    let next_row = row_node.nextElementSibling;
-    if(next_row != null) {
-        row_node.appendChild(next_row.firstChild);
-        if(next_row.childElementCount <= 0) {
-            next_row.parentNode.removeChild(next_row);
+    prev_row = row_node;
+    while((next_row = prev_row.nextElementSibling) != null) {
+        if(next_row.childElementCount > 0 && 
+            getRowWidth(prev_row) <= getEntriesPerRow() - next_row.firstChild.colSpan) {
+            prev_row.appendChild(next_row.firstChild);
         }
-    } else {
-        if(row_node.childElementCount <= 0) {
-            row_node.parentNode.removeChild(row_node);
-        }
+        prev_row = next_row;
     }
 }
 
 function deleteEicon(node, name, lower_group){
-    if (!should_confirm || confirm(`Do you want to delete the EIcon '${name}'?`)) {
+    if (!should_confirm || confirm(`Do you want to delete the EIcon?`)) {
+        let rows = node.rowSpan;
+        let cols = node.colSpan;
         eicons[lower_group].splice(eicons[lower_group].indexOf(name), 1);
-        let row_node = node.parentNode.parentNode;
-        row_node.removeChild(node.parentNode);
+        let row_node = node.parentNode;
+        row_node.removeChild(node);
+        for(r = 0; r < rows; r++){
+            for(c = 0; c < cols; c++){
+                fillRow(row_node);
+            }
+            row_node = row_node.nextElementSibling;
+            if(row_node === null) {
+                break;
+            }
+        }
+        
         saveCookie();
-        fillRow(row_node);
     }
 }
 
@@ -243,10 +269,6 @@ function renameGroup(node, name) {
 
         saveCookie();
     }
-}
-
-function selectedEicon(node) {
-    
 }
 
 function getSelectedImages() {
@@ -313,7 +335,7 @@ function changeGroupCont(){
         old_row = image.parentNode;
         old_group = old_row.parentNode.id;
         
-        appendChildToTable(group_node, image, group);
+        appendChildToTable(group_node, image);
         fillRow(old_row);
 
         image.querySelector("input").checked = false;
@@ -329,6 +351,296 @@ function changeGroupCont(){
     }
     saveCookie();
 }
+
+let delete_mode = false;
+const enable_delete_mode = "Enable Delete Mode";
+const disable_delete_mode = "Disable Delete Mode";
+function enableDeleteMode(){
+    if(delete_mode) {
+        $("#deletemode").text(enable_delete_mode);
+        $("#info").text("");
+        should_confirm = true;
+    } else {
+        $("#deletemode").text(disable_delete_mode);
+        if(select_mode) {
+            enableSelectMode();
+        }
+        $("#info").text("There will be no delete confirmation!");
+        alert("As long as Delete Mode is enabled, any EIcon you click on will be deleted without any confirmation!")
+        should_confirm = false;
+    }
+    $("#deletemode").toggleClass("delete-mode");
+    delete_mode = !delete_mode;
+}
+
+let select_mode = false;
+const enable_select_mode = "Enable Select Mode";
+const disable_select_mode = "Disable Select Mode";
+function enableSelectMode(){
+    if(select_mode) {
+        $("#selectmode").text(enable_select_mode);
+        $("#info").text("");
+    } else {
+        $("#selectmode").text(disable_select_mode);
+        if(delete_mode) {
+            enableDeleteMode();
+        }
+    }
+    $("#selectmode").toggleClass("delete-mode");
+    select_mode = !select_mode;
+}
+
+let mosaic_width = -1;
+let mosaic_height = -1;
+
+function mosaicPreview(text){
+    mosaic_width = 0;
+    mosaic_height = 1;
+    let curr_width = 0;
+
+    let images = [];
+    let matches = text.matchAll(regexp_tags);
+    const preview = document.getElementById("mosaicpreview");
+    preview.innerText = "";
+    for(const match of matches) {
+        let name = match[1].trim().toLowerCase();
+        let img = document.createElement("img");
+        img.loading = "lazy";
+        img.title = name;
+        img.alt = "Failed to Load!";
+        img.classList.add("preload");
+
+        img.src = src_link_template.replaceAll("{name}", name);
+        let preload_img = new Image();
+        preload_img.src = img.src;
+
+        images.push(img);
+        preview.appendChild(img);
+
+        curr_width++;
+        if(curr_width > mosaic_width){
+            mosaic_width = curr_width;
+        }
+
+        if(match[2] !== undefined) {
+            let linebreak = document.createElement("br");
+            linebreak.classList.add("gif-seperator");
+            preview.appendChild(linebreak);
+            mosaic_height++;
+            curr_width = 0;
+        }
+    }
+
+    for(const img of images){
+        img.classList.remove("preload");
+    }
+}
+
+function createMosaic(){
+    $("#mosaicinput").val("");
+    $("#mosaicpreview").text("");
+    $("#mosaicgroup").val($("#eicongroup").val());
+    $("#mosaicdialog").show();
+    $("#mosaicdialog").dialog({
+        modal: true,
+        width:'auto'
+    });
+}
+
+function setBorderClass(mosaic_piece, row, col) {
+    if(row === 0 && col === 0) {
+        if(mosaic_width === 1 && mosaic_height === 1) {
+            mosaic_piece.classList.add("full-border");
+        } else if(mosaic_width === 1) {
+            mosaic_piece.classList.add("upper-left-right-border");
+        } else if(mosaic_height === 1) {
+            mosaic_piece.classList.add("right-upper-lower-border");
+        } else {
+            mosaic_piece.classList.add("upper-left-border");
+        }
+    } else if (col === mosaic_width - 1) {
+        if(row === 0) {
+            if(mosaic_height === 1) {
+                mosaic_piece.classList.add("upper-right-lower-border");
+            } else {
+                mosaic_piece.classList.add("upper-right-border");
+            }
+        } else if(row === mosaic_height - 1) {
+            mosaic_piece.classList.add("lower-right-border");
+        } else {
+            mosaic_piece.classList.add("right-border");
+        }
+    } else if (row === mosaic_height - 1) {
+        if(col === 0) {
+            if(mosaic_width === 1) {
+                mosaic_piece.classList.add("right-left-lower-border");
+            } else {
+                mosaic_piece.classList.add("lower-left-border");
+            }
+        } else {
+            mosaic_piece.classList.add("lower-border");
+        }
+    } else if (row === 0) {
+        mosaic_piece.classList.add("upper-border");
+    } else if (col === 0) {
+        mosaic_piece.classList.add("left-border");
+    }
+}
+
+function createMosaicEntry(){
+    let entry = document.createElement("td");
+    entry.classList.add("mosaic");
+    entry.colSpan = mosaic_width;
+    entry.rowSpan = mosaic_height;
+    return entry;
+}
+
+function addFunctionality(entry, identifier, group_name, clipboard_text){
+    let del = document.createElement("div");
+    del.classList.add("delete");
+    del.title = "Delete this EIcon"
+    del.onclick = (e) => {
+        deleteEicon(entry, identifier, group_name);
+        e.stopPropagation();
+    }
+    del.innerText = "❌";
+
+    let select = document.createElement("input");
+    select.type = "checkbox";
+    select.classList.add("select");
+    select.title = "Select this EIcon";
+
+    entry.onclick = () => {
+        if(delete_mode) {
+            deleteEicon(entry, identifier, group_name);
+        } else if (select_mode) {
+            select.click();
+        } else {
+            navigator.clipboard.writeText(clipboard_text);
+        }
+    }
+
+    entry.appendChild(del);
+    entry.appendChild(select);
+}
+
+function addMosaic(){
+    $("#mosaicdialog").dialog("close");
+    let group_name = $("#mosaicgroup").val();
+    let preview = $("#mosaicpreview");
+
+    let group = getOrCreateGroup(group_name);
+    let last_row = getFirstFreeRow(group, mosaic_width);
+    let entry = createMosaicEntry()
+    last_row.appendChild(entry);
+
+    let row = 0;
+    let col = 0;
+    let clipboard_text = "";
+    let dict_entry = [];
+    for(const child of Array.from(preview.children())){
+        setBorderClass(child, row, col);
+        col++;
+
+        if(child.nodeName == "BR") {
+            col = 0;
+            row++;
+            clipboard_text += "\n";
+            dict_entry.push(line_break);
+        } else {
+            clipboard_text += clipboard_template.replaceAll("{name}", child.title);
+            dict_entry.push(child.title);
+        }
+        entry.appendChild(child);
+    }
+
+    for(i = 1; i < mosaic_height; i++){
+        if((last_row = last_row.nextElementSibling) === null){
+            last_row = document.createElement("tr");
+            group.appendChild(last_row);
+        }
+        last_row.classList.add(protected_class);
+        
+    }
+
+    addFunctionality(entry, dict_entry, group_name.toLowerCase(), clipboard_text);
+
+    let eicon_group = eicons[group_name.toLowerCase()]
+    if (eicon_group === undefined) {
+        eicon_group = []
+        eicons[group_name.toLowerCase()] = eicon_group
+    }
+    eicon_group.push(dict_entry);
+    saveCookie();
+}
+
+function loadMosaic(names, group_name){
+    mosaic_width = 0;
+    mosaic_height = 1;
+    let curr_width = 0;
+
+    for(const name of names) {
+        if(name === line_break){
+            let linebreak = document.createElement("br");
+            linebreak.classList.add("gif-seperator");
+            images.push(linebreak);
+            mosaic_height++;
+            curr_width = 0;
+        } else {
+            let img = document.createElement("img");
+            img.loading = "lazy";
+            img.title = name;
+            img.alt = "Failed to Load!";
+            img.classList.add("preload");
+
+            img.src = src_link_template.replaceAll("{name}", name);
+            let preload_img = new Image();
+            preload_img.src = img.src;
+
+            images.push(img);
+
+            curr_width++;
+            if(curr_width > mosaic_width){
+                mosaic_width = curr_width;
+            }
+        }
+    }
+
+    let group = getOrCreateGroup(group_name);
+    let last_row = getFirstFreeRow(group, mosaic_width);
+    let entry = createMosaicEntry();
+    last_row.appendChild(entry);
+
+    let row = 0;
+    let col = 0;
+    let clipboard_text = "";
+    for(const img of images){
+        img.classList.remove("preload");
+        setBorderClass(img, row, col);
+        col++;
+
+        if(img.nodeName == "BR") {
+            col = 0;
+            row++;
+            clipboard_text += "\n";
+        } else {
+            clipboard_text += clipboard_template.replaceAll("{name}", img.title);
+        }
+        entry.appendChild(img);
+    }
+
+    for(i = 1; i < mosaic_height; i++){
+        if((last_row = last_row.nextElementSibling) === null){
+            last_row = document.createElement("tr");
+            group.appendChild(last_row);
+        }
+        last_row.classList.add(protected_class);
+    }
+}
+/*
+[eicon]slime_dick1[/eicon][eicon]slime_dick2[/eicon]
+[eicon]slime_dick3[/eicon][eicon]slime_dick4[/eicon]
+*/
 
 function saveCookie(){
     let eicon_string = JSON.stringify(eicons);
@@ -350,7 +662,11 @@ function loadCookie(){
 
     for (const group in eicons) {
         for (const name of eicons[group]) {
-            addImage(name, group);
+            if(name instanceof Array) {
+
+            } else {
+                addImage(name, group);
+            }
         }
     }
 }

@@ -130,6 +130,8 @@ textarea {
 .image img {
     float: left;
     display: block;
+    width: 100px;
+    height: 100px;
 }
   
 .image:hover {
@@ -144,6 +146,155 @@ textarea {
     display: block;
 }
 
+.mosaic {
+    cursor: pointer;
+    position: relative;
+    padding: 0px;
+}
+
+.mosaic img {
+    float: left;
+    display: block;
+    width: 100px;
+    height: 100px;
+}
+
+.mosaic:hover .delete {
+    display: block;
+}
+
+.mosaic:hover .select {
+    display: block;
+}
+
+.mosaic:hover .full-border {
+    border: 1px solid #777;
+}
+
+.full-border {
+    border: 1px solid #ccc;
+}
+
+.mosaic:hover .upper-left-right-border {
+    border-left: 1px solid #777;
+    border-right: 1px solid #777;
+    border-top: 1px solid #777;
+}
+
+.upper-left-right-border {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+
+.mosaic:hover .upper-left-border {
+    border-left: 1px solid #777;
+    border-top: 1px solid #777;
+}
+
+.upper-left-border {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+
+.mosaic:hover .upper-right-lower-border {
+    border-right: 1px solid #777;
+    border-bottom: 1px solid #777;
+    border-top: 1px solid #777;
+}
+
+.upper-right-lower-border {
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+
+.mosaic:hover .upper-border {
+    border-top: 1px solid #777;
+}
+
+.upper-border {
+    border-top: 1px solid #ccc;
+}
+
+.mosaic:hover .upper-right-border {
+    border-right: 1px solid #777;
+    border-top: 1px solid #777;
+}
+
+.upper-right-border {
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+
+.mosaic:hover .right-left-lower-border {
+    border-right: 1px solid #777;
+    border-bottom: 1px solid #777;
+    border-left: 1px solid #777;
+}
+
+.right-left-lower-border {
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+
+.mosaic:hover .right-border {
+    border-right: 1px solid #777;
+}
+
+.right-border {
+    border-right: 1px solid #ccc;
+}
+
+.mosaic:hover .lower-right-border {
+    border-right: 1px solid #777;
+    border-bottom: 1px solid #777;
+}
+
+.lower-right-border {
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.mosaic:hover .right-upper-lower-border {
+    border-right: 1px solid #777;
+    border-bottom: 1px solid #777;
+    border-top: 1px solid #777;
+}
+
+.right-upper-lower-border {
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+
+.mosaic:hover .lower-border {
+    border-bottom: 1px solid #777;
+}
+
+.lower-border {
+    border-bottom: 1px solid #ccc;
+}
+
+.mosaic:hover .lower-left-border {
+    border-left: 1px solid #777;
+    border-bottom: 1px solid #777;
+}
+
+.lower-left-border {
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.mosaic:hover .left-border {
+    border-left: 1px solid #777;
+}
+
+.left-border {
+    border-left: 1px solid #ccc;
+}
+
 .selected {
     border: 1px solid #bebeeb;
 }
@@ -154,10 +305,11 @@ textarea {
 }
 .left {
     float: left;
-    width: 70%;
+    width: 50%;
 }
 .right {
     float: right;
+    width: 25%;
 }
 
 .delete {
@@ -187,7 +339,7 @@ textarea {
 }
 
 .gallery {
-    
+
 }
 
 .deletegroup {
@@ -220,10 +372,24 @@ textarea {
     background: #343468;
 }
 
+.gif-seperator {
+    line-height: 100px;
+}
+
+.delete-mode {
+    background-color: #542a2a;
+}
+
 #groupselect{
     width: 268px;
 }
 
 #group_change_name {
     width: 260px;
+}
+
+#mosaicpreview {
+    height: 400px;
+    background: #2a2a54;
+    cursor: auto !important;
 }

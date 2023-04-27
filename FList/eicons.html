@@ -20,6 +20,19 @@
       <button class="big" id="change_group_dialog_btn" onclick="changeGroupCont()">Select Group</button>
     </div>
 
+    <div class="big centre" id="mosaicdialog" title="Create a Multi-EIcon Mosaic">
+      
+      <textarea id="mosaicinput" rows="4" cols="60" placeholder="Input the same EIcon layout you would in F-Chat here." oninput="mosaicPreview(this.value)">
+        
+      </textarea><br>
+      <label for="mosaicgroup" class="big">EIcon Group:</label>
+      <input type="text" class="big" id="mosaicgroup" name="mosaicgroup" value="Default" size='32'><br>
+      <br>
+      <p>Preview:</p>
+      <div class="image" id="mosaicpreview"></div>
+      <button class="big" id="add_mosaic" onclick="addMosaic()">Add Mosaic</button>
+    </div>
+
     <div class="wrapper centre">
       <div class="left big">
         <p class="italic">The EIcon tag is copied to your clipboard when clicking on an icon.</p>
@@ -32,10 +45,18 @@
         <button class="big" id="addeicon" onclick="addEIcon()">Add EIcon!</button>
       </div>
 
-      <div class="right big">
+      
+      <div class="right big" id="massactions">
         <p>Mass Actions</p><br>
         <button class="big" id="changegroup" onclick="changeGroup()">Change Group</button><br>
         <button class="big" id="deleteEicons" onclick="deleteEicons()">Delete EIcons</button><br>
+      </div>
+      <div class="right big">
+        <p>Misc. Actions</p>
+        <span id="info" class="italic"></span><br><br>
+        <button class="big" id="createmosaic" onclick="createMosaic()">Create Multi-EIcon Mosaic</button><br>
+        <button class="big" id="deletemode" title="Clicking on an Image will delete it!" onclick="enableDeleteMode()">Enable Delete Mode</button><br>
+        <button class="big" id="selectmode" onclick="enableSelectMode()">Enable Select Mode</button>
       </div>
 
     </div>
