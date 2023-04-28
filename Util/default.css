@@ -12,6 +12,10 @@ button, input, select {
     background-color: #2a2a54;
 }
 
+button:disabled {
+    background-color: #666;
+}
+
 textarea {
     background-color: #191932;
 }

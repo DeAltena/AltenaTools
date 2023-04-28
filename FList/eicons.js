@@ -13,6 +13,8 @@ function init() {
     $("#groupdialog").hide();
     $("#mosaicdialog").hide();
 
+    onCheckbox();
+
     let submit = (event) => {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -300,6 +302,15 @@ function deleteEicons(){
     }
 }
 
+function onCheckbox(){
+    let mass_buttons = document.getElementsByClassName("mass");
+    let is_empty = getSelectedImages().length === 0;
+    for(const btn of mass_buttons){
+        btn.disabled = is_empty;
+    }
+
+}
+
 function changeGroup() {
     if(getSelectedImages().length == 0) {
         return;
@@ -509,6 +520,7 @@ function addFunctionality(entry, identifier, group_name, clipboard_text){
     select.type = "checkbox";
     select.classList.add("select");
     select.title = "Select this EIcon";
+    select.onclick = onCheckbox;
 
     entry.onclick = () => {
         if(delete_mode) {
@@ -575,6 +587,7 @@ function addMosaic(){
 }
 
 function loadMosaic(names, group_name){
+    images = [];
     mosaic_width = 0;
     mosaic_height = 1;
     let curr_width = 0;
@@ -663,7 +676,7 @@ function loadCookie(){
     for (const group in eicons) {
         for (const name of eicons[group]) {
             if(name instanceof Array) {
-
+                loadMosaic(name, group);
             } else {
                 addImage(name, group);
             }
