@@ -506,6 +506,7 @@ function createMosaicEntry(){
     return entry;
 }
 
+let clipboard_buffer = "";
 function addFunctionality(entry, identifier, group_name, clipboard_text){
     let del = document.createElement("div");
     del.classList.add("delete");
@@ -522,13 +523,19 @@ function addFunctionality(entry, identifier, group_name, clipboard_text){
     select.title = "Select this EIcon";
     select.onclick = onCheckbox;
 
-    entry.onclick = () => {
+    entry.onclick = (e) => {
         if(delete_mode) {
             deleteEicon(entry, identifier, group_name);
         } else if (select_mode) {
             select.click();
         } else {
-            navigator.clipboard.writeText(clipboard_text);
+            if(e.shiftKey) {
+                clipboard_buffer += clipboard_text;
+            } else {
+                clipboard_buffer = clipboard_text;
+            }
+            navigator.clipboard.writeText(clipboard_buffer);
+            $.toast('EIcon copied to Clipboard!');
         }
     }
 
@@ -641,6 +648,8 @@ function loadMosaic(names, group_name){
         }
         entry.appendChild(img);
     }
+
+    addFunctionality(entry, names, group_name, clipboard_text);
 
     for(i = 1; i < mosaic_height; i++){
         if((last_row = last_row.nextElementSibling) === null){
