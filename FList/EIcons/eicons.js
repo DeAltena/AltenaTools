@@ -5,7 +5,7 @@ const cookie_name = 'eicons';
 const protected_class = 'protected';
 const line_break = '[br]';
 
-eicons = {
+let eicons = {
 
 };
 
