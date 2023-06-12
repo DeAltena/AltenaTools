@@ -29,7 +29,7 @@ function init() {
     loadCookie();
 }
 
-const regexp_tags = /\[eicon\](.+?)\[\/eicon\],?([\r\n]+)?/gm;
+const regexp_tags = /\[eicon\](.+?)\[\/eicon\],?([\r\n]+\s*\S+)?/gm;
 const regexp_normal = /([^\[\],]+)\s*,?\s*/gm;
 function addEIcon() {
     let names = []
@@ -37,19 +37,19 @@ function addEIcon() {
     let group = document.getElementById("eicongroup").value;
 
     let matches = name_raw.matchAll(regexp_tags);
-    for(const match of matches) {
+    for (const match of matches) {
         names.push(match[1].trim())
     }
 
     if (names.length === 0) {
         let matches = name_raw.matchAll(regexp_normal);
-        for(const match of matches) {
+        for (const match of matches) {
             names.push(match[1].trim())
         }
     }
 
 
-    for(const name of names) {
+    for (const name of names) {
         addImage(name, group);
 
         let eicon_group = eicons[group.toLowerCase()]
@@ -59,21 +59,21 @@ function addEIcon() {
         }
         eicon_group.push(name);
     }
-   
+
     saveCookie();
 }
 
 function getRowWidth(row) {
     let row_width = 0;
-    for(const child of Array.from(row.children)){
+    for (const child of Array.from(row.children)) {
         row_width += child.colSpan;
     }
     return row_width;
 }
 
-function getFirstFreeRow(table, width){
-    for(const row of Array.from(table.children)){
-        if(getRowWidth(row) <= getEntriesPerRow() - width) {
+function getFirstFreeRow(table, width) {
+    for (const row of Array.from(table.children)) {
+        if (getRowWidth(row) <= getEntriesPerRow() - width) {
             return row;
         }
     }
@@ -123,10 +123,10 @@ function getOrCreateGroup(name) {
 
     let group_node = document.getElementById(lower_name);
 
-    if(group_node != null) {
+    if (group_node != null) {
         return group_node;
     }
-    
+
     let del = document.createElement("div");
     del.classList.add("deletegroup");
     del.onclick = (e) => {
@@ -153,7 +153,7 @@ function getOrCreateGroup(name) {
     btn.appendChild(del);
     btn.appendChild(edit);
     btn.appendChild(title);
-    
+
     group_node = document.createElement("table");
     group_node.classList.add("content");
     group_node.classList.add("centre");
@@ -171,7 +171,7 @@ function getOrCreateGroup(name) {
     return group_node
 }
 
-function collapseEvent(collapsible){
+function collapseEvent(collapsible) {
     if (collapsible.getAttribute('listener') != null) {
         return;
     }
@@ -184,9 +184,9 @@ function collapseEvent(collapsible){
             content.style.display = "block";
         }
     });
-}   
+}
 
-function initCollapsibles(){
+function initCollapsibles() {
     var visibles = document.getElementsByClassName("visible-content");
     for (i = 0; i < visibles.length; i++) {
         visibles[i].style.display = "block";
@@ -204,8 +204,8 @@ let should_confirm = true
 
 function fillRow(row_node) {
     prev_row = row_node;
-    while((next_row = prev_row.nextElementSibling) != null) {
-        if(next_row.childElementCount > 0 && 
+    while ((next_row = prev_row.nextElementSibling) != null) {
+        if (next_row.childElementCount > 0 &&
             getRowWidth(prev_row) <= getEntriesPerRow() - next_row.firstChild.colSpan) {
             prev_row.appendChild(next_row.firstChild);
         }
@@ -213,23 +213,23 @@ function fillRow(row_node) {
     }
 }
 
-function deleteEicon(node, name, lower_group){
+function deleteEicon(node, name, lower_group) {
     if (!should_confirm || confirm(`Do you want to delete the EIcon?`)) {
         let rows = node.rowSpan;
         let cols = node.colSpan;
         eicons[lower_group].splice(eicons[lower_group].indexOf(name), 1);
         let row_node = node.parentNode;
         row_node.removeChild(node);
-        for(r = 0; r < rows; r++){
-            for(c = 0; c < cols; c++){
+        for (r = 0; r < rows; r++) {
+            for (c = 0; c < cols; c++) {
                 fillRow(row_node);
             }
             row_node = row_node.nextElementSibling;
-            if(row_node === null) {
+            if (row_node === null) {
                 break;
             }
         }
-        
+
         saveCookie();
     }
 }
@@ -249,7 +249,7 @@ function renameGroup(node, name) {
     if (group != null && group != "") {
         group = group.toLowerCase();
 
-        if (group in eicons){
+        if (group in eicons) {
             alert("A group with that name already exists!");
             return;
         }
@@ -277,47 +277,47 @@ function getSelectedImages() {
     checkboxes = document.getElementsByClassName("select");
     let selected_images = [];
 
-    for(const checkbox of checkboxes) {
-        if(checkbox.checked) {
+    for (const checkbox of checkboxes) {
+        if (checkbox.checked) {
             selected_images.push(checkbox.parentNode);
-        }   
+        }
     }
 
     return selected_images;
 }
 
-function deleteEicons(){
+function deleteEicons() {
     selected_images = getSelectedImages();
 
-    if(selected_images.length == 0) {
+    if (selected_images.length == 0) {
         return;
     }
 
-    if (confirm(`Are you sure you want to delete all ${selected_images.length} EIcons?`)){
+    if (confirm(`Are you sure you want to delete all ${selected_images.length} EIcons?`)) {
         should_confirm = false;
-        for(const image of getSelectedImages()) {
+        for (const image of getSelectedImages()) {
             image.querySelector(".delete").click();
         }
         should_confirm = true;
     }
 }
 
-function onCheckbox(){
+function onCheckbox() {
     let mass_buttons = document.getElementsByClassName("mass");
     let is_empty = getSelectedImages().length === 0;
-    for(const btn of mass_buttons){
+    for (const btn of mass_buttons) {
         btn.disabled = is_empty;
     }
 
 }
 
 function changeGroup() {
-    if(getSelectedImages().length == 0) {
+    if (getSelectedImages().length == 0) {
         return;
     }
 
     select = document.getElementById("groupselect");
-    for(const group_name in eicons) {
+    for (const group_name in eicons) {
         let opt = document.createElement("option");
         opt.value = group_name;
         opt.innerText = group_name.toUpperCase();
@@ -326,15 +326,15 @@ function changeGroup() {
     $("#groupdialog").show();
     $("#groupdialog").dialog({
         modal: true,
-        width:'auto'
+        width: 'auto'
     });
 }
 
-function changeGroupCont(){
+function changeGroupCont() {
     $("#groupdialog").dialog('close');
 
     let group = $("#group_change_name").val();
-    if(group == null || group.trim() == "") {
+    if (group == null || group.trim() == "") {
         group = $("#groupselect").find(":selected").val();
     }
 
@@ -342,10 +342,10 @@ function changeGroupCont(){
 
     let group_node = getOrCreateGroup(group);
 
-    for(const image of getSelectedImages()) {
+    for (const image of getSelectedImages()) {
         old_row = image.parentNode;
         old_group = old_row.parentNode.id;
-        
+
         appendChildToTable(group_node, image);
         fillRow(old_row);
 
@@ -366,14 +366,14 @@ function changeGroupCont(){
 let delete_mode = false;
 const enable_delete_mode = "Enable Delete Mode";
 const disable_delete_mode = "Disable Delete Mode";
-function enableDeleteMode(){
-    if(delete_mode) {
+function enableDeleteMode() {
+    if (delete_mode) {
         $("#deletemode").text(enable_delete_mode);
         $("#info").text("");
         should_confirm = true;
     } else {
         $("#deletemode").text(disable_delete_mode);
-        if(select_mode) {
+        if (select_mode) {
             enableSelectMode();
         }
         $("#info").text("There will be no delete confirmation!");
@@ -387,13 +387,13 @@ function enableDeleteMode(){
 let select_mode = false;
 const enable_select_mode = "Enable Select Mode";
 const disable_select_mode = "Disable Select Mode";
-function enableSelectMode(){
-    if(select_mode) {
+function enableSelectMode() {
+    if (select_mode) {
         $("#selectmode").text(enable_select_mode);
         $("#info").text("");
     } else {
         $("#selectmode").text(disable_select_mode);
-        if(delete_mode) {
+        if (delete_mode) {
             enableDeleteMode();
         }
     }
@@ -404,7 +404,7 @@ function enableSelectMode(){
 let mosaic_width = -1;
 let mosaic_height = -1;
 
-function mosaicPreview(text){
+function mosaicPreview(text) {
     mosaic_width = 0;
     mosaic_height = 1;
     let curr_width = 0;
@@ -413,7 +413,7 @@ function mosaicPreview(text){
     let matches = text.matchAll(regexp_tags);
     const preview = document.getElementById("mosaicpreview");
     preview.innerText = "";
-    for(const match of matches) {
+    for (const match of matches) {
         let name = match[1].trim().toLowerCase();
         let img = document.createElement("img");
         img.loading = "lazy";
@@ -429,11 +429,11 @@ function mosaicPreview(text){
         preview.appendChild(img);
 
         curr_width++;
-        if(curr_width > mosaic_width){
+        if (curr_width > mosaic_width) {
             mosaic_width = curr_width;
         }
 
-        if(match[2] !== undefined) {
+        if (match[2] !== undefined) {
             let linebreak = document.createElement("br");
             linebreak.classList.add("gif-seperator");
             preview.appendChild(linebreak);
@@ -442,63 +442,83 @@ function mosaicPreview(text){
         }
     }
 
-    for(const img of images){
+    for (const img of images) {
         img.classList.remove("preload");
     }
 }
 
-function createMosaic(){
+function createMosaic() {
     $("#mosaicinput").val("");
     $("#mosaicpreview").text("");
     $("#mosaicgroup").val($("#eicongroup").val());
     $("#mosaicdialog").show();
     $("#mosaicdialog").dialog({
         modal: true,
-        width:'auto'
+        width: 'auto'
     });
 }
 
 function setBorderClass(mosaic_piece, row, col) {
-    if(row === 0 && col === 0) {
-        if(mosaic_width === 1 && mosaic_height === 1) {
-            mosaic_piece.classList.add("full-border");
-        } else if(mosaic_width === 1) {
-            mosaic_piece.classList.add("upper-left-right-border");
-        } else if(mosaic_height === 1) {
-            mosaic_piece.classList.add("right-upper-lower-border");
-        } else {
-            mosaic_piece.classList.add("upper-left-border");
+    
+    if (mosaic_width == 1 && mosaic_height == 0) {
+        mosaic_piece.classList.add("OverlayFull");
+        return
+    }
+
+    if (col == 0) {
+        if (mosaic_height == 1) {
+            mosaic_piece.classList.add("OverlayFullLeft");
         }
-    } else if (col === mosaic_width - 1) {
-        if(row === 0) {
-            if(mosaic_height === 1) {
-                mosaic_piece.classList.add("upper-right-lower-border");
-            } else {
-                mosaic_piece.classList.add("upper-right-border");
-            }
-        } else if(row === mosaic_height - 1) {
-            mosaic_piece.classList.add("lower-right-border");
-        } else {
-            mosaic_piece.classList.add("right-border");
+        else if (row == 0 && mosaic_width == 1) {
+            mosaic_piece.classList.add("OverlayFullUpper");
         }
-    } else if (row === mosaic_height - 1) {
-        if(col === 0) {
-            if(mosaic_width === 1) {
-                mosaic_piece.classList.add("right-left-lower-border");
-            } else {
-                mosaic_piece.classList.add("lower-left-border");
-            }
-        } else {
-            mosaic_piece.classList.add("lower-border");
+        else if (row == mosaic_height - 1 && mosaic_width == 1) {
+            mosaic_piece.classList.add("OverlayFullLower");
         }
-    } else if (row === 0) {
-        mosaic_piece.classList.add("upper-border");
-    } else if (col === 0) {
-        mosaic_piece.classList.add("left-border");
+        else if (row == 0) {
+            mosaic_piece.classList.add("OverlayUL");
+        }
+        else if (row == mosaic_height - 1) {
+            mosaic_piece.classList.add("OverlayLL");
+        }
+        else if (mosaic_width == 1) {
+            mosaic_piece.classList.add("OverlayVer");
+        }
+        else {
+            mosaic_piece.classList.add("OverlayLeft");
+        }
+    }
+    else if (col == mosaic_width - 1) {
+        if (mosaic_height == 1) {
+            mosaic_piece.classList.add("OverlayFullRight");
+        }
+        else if (row == 0) {
+            mosaic_piece.classList.add("OverlayUR");
+        }
+        else if (row == mosaic_height - 1) {
+            mosaic_piece.classList.add("OverlayLR");
+        }
+        else {
+            mosaic_piece.classList.add("OverlayRight");
+        }
+    }
+    else if (row == 0) {
+        if (mosaic_height == 1) {
+            mosaic_piece.classList.add("OverlayHor");
+        }
+        else {
+            mosaic_piece.classList.add("OverlayUpper");
+        }
+    }
+    else if (row == mosaic_height - 1) {
+        mosaic_piece.classList.add("OverlayLower");
+    }
+    else {
+        mosaic_piece.classList.add("OverlayMid");
     }
 }
 
-function createMosaicEntry(){
+function createMosaicEntry() {
     let entry = document.createElement("td");
     entry.classList.add("mosaic");
     entry.colSpan = mosaic_width;
@@ -507,7 +527,7 @@ function createMosaicEntry(){
 }
 
 let clipboard_buffer = "";
-function addFunctionality(entry, identifier, group_name, clipboard_text){
+function addFunctionality(entry, identifier, group_name, clipboard_text) {
     let del = document.createElement("div");
     del.classList.add("delete");
     del.title = "Delete this EIcon"
@@ -524,12 +544,12 @@ function addFunctionality(entry, identifier, group_name, clipboard_text){
     select.onclick = onCheckbox;
 
     entry.onclick = (e) => {
-        if(delete_mode) {
+        if (delete_mode) {
             deleteEicon(entry, identifier, group_name);
         } else if (select_mode) {
             select.click();
         } else {
-            if(e.shiftKey) {
+            if (e.shiftKey) {
                 clipboard_buffer += clipboard_text;
             } else {
                 clipboard_buffer = clipboard_text;
@@ -543,7 +563,7 @@ function addFunctionality(entry, identifier, group_name, clipboard_text){
     entry.appendChild(select);
 }
 
-function addMosaic(){
+function addMosaic() {
     $("#mosaicdialog").dialog("close");
     let group_name = $("#mosaicgroup").val();
     let preview = $("#mosaicpreview");
@@ -557,11 +577,11 @@ function addMosaic(){
     let col = 0;
     let clipboard_text = "";
     let dict_entry = [];
-    for(const child of Array.from(preview.children())){
+    for (const child of Array.from(preview.children())) {
         setBorderClass(child, row, col);
         col++;
 
-        if(child.nodeName == "BR") {
+        if (child.nodeName == "BR") {
             col = 0;
             row++;
             clipboard_text += "\n";
@@ -573,13 +593,13 @@ function addMosaic(){
         entry.appendChild(child);
     }
 
-    for(i = 1; i < mosaic_height; i++){
-        if((last_row = last_row.nextElementSibling) === null){
+    for (i = 1; i < mosaic_height; i++) {
+        if ((last_row = last_row.nextElementSibling) === null) {
             last_row = document.createElement("tr");
             group.appendChild(last_row);
         }
         last_row.classList.add(protected_class);
-        
+
     }
 
     addFunctionality(entry, dict_entry, group_name.toLowerCase(), clipboard_text);
@@ -593,14 +613,14 @@ function addMosaic(){
     saveCookie();
 }
 
-function loadMosaic(names, group_name){
+function loadMosaic(names, group_name) {
     images = [];
     mosaic_width = 0;
     mosaic_height = 1;
     let curr_width = 0;
 
-    for(const name of names) {
-        if(name === line_break){
+    for (const name of names) {
+        if (name === line_break) {
             let linebreak = document.createElement("br");
             linebreak.classList.add("gif-seperator");
             images.push(linebreak);
@@ -620,7 +640,7 @@ function loadMosaic(names, group_name){
             images.push(img);
 
             curr_width++;
-            if(curr_width > mosaic_width){
+            if (curr_width > mosaic_width) {
                 mosaic_width = curr_width;
             }
         }
@@ -634,12 +654,12 @@ function loadMosaic(names, group_name){
     let row = 0;
     let col = 0;
     let clipboard_text = "";
-    for(const img of images){
+    for (const img of images) {
         img.classList.remove("preload");
         setBorderClass(img, row, col);
         col++;
 
-        if(img.nodeName == "BR") {
+        if (img.nodeName == "BR") {
             col = 0;
             row++;
             clipboard_text += "\n";
@@ -651,8 +671,8 @@ function loadMosaic(names, group_name){
 
     addFunctionality(entry, names, group_name, clipboard_text);
 
-    for(i = 1; i < mosaic_height; i++){
-        if((last_row = last_row.nextElementSibling) === null){
+    for (i = 1; i < mosaic_height; i++) {
+        if ((last_row = last_row.nextElementSibling) === null) {
             last_row = document.createElement("tr");
             group.appendChild(last_row);
         }
@@ -664,7 +684,7 @@ function loadMosaic(names, group_name){
 [eicon]slime_dick3[/eicon][eicon]slime_dick4[/eicon]
 */
 
-function saveCookie(){
+function saveCookie() {
     let eicon_string = JSON.stringify(eicons);
 
     if (new Blob([eicon_string]).size > 4096) {
@@ -675,16 +695,16 @@ function saveCookie(){
     setCookie(cookie_name, eicon_string);
 }
 
-function loadCookie(){
+function loadCookie() {
     let tmp = getCookie(cookie_name);
-    
-    if(!isBlank(tmp)){
+
+    if (!isBlank(tmp)) {
         eicons = JSON.parse(tmp);
     }
 
     for (const group in eicons) {
         for (const name of eicons[group]) {
-            if(name instanceof Array) {
+            if (name instanceof Array) {
                 loadMosaic(name, group);
             } else {
                 addImage(name, group);

@@ -171,132 +171,152 @@ textarea {
     display: block;
 }
 
-.mosaic:hover .full-border {
+.mosaic:hover .OverlayFull {
     border: 1px solid #777;
 }
 
-.full-border {
+.OverlayFull {
     border: 1px solid #ccc;
 }
 
-.mosaic:hover .upper-left-right-border {
+.mosaic:hover .OverlayFullUpper {
     border-left: 1px solid #777;
     border-right: 1px solid #777;
     border-top: 1px solid #777;
 }
 
-.upper-left-right-border {
+.OverlayFullUpper {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
     border-top: 1px solid #ccc;
 }
 
-.mosaic:hover .upper-left-border {
+.mosaic:hover .OverlayUL {
     border-left: 1px solid #777;
     border-top: 1px solid #777;
 }
 
-.upper-left-border {
+.OverlayUL {
     border-left: 1px solid #ccc;
     border-top: 1px solid #ccc;
 }
 
-.mosaic:hover .upper-right-lower-border {
+.mosaic:hover .OverlayFullRight {
     border-right: 1px solid #777;
     border-bottom: 1px solid #777;
     border-top: 1px solid #777;
 }
 
-.upper-right-lower-border {
+.OverlayFullRight {
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     border-top: 1px solid #ccc;
 }
 
-.mosaic:hover .upper-border {
+.mosaic:hover .OverlayUpper {
     border-top: 1px solid #777;
 }
 
-.upper-border {
+.OverlayUpper {
     border-top: 1px solid #ccc;
 }
 
-.mosaic:hover .upper-right-border {
+.mosaic:hover .OverlayUR {
     border-right: 1px solid #777;
     border-top: 1px solid #777;
 }
 
-.upper-right-border {
+.OverlayUR {
     border-right: 1px solid #ccc;
     border-top: 1px solid #ccc;
 }
 
-.mosaic:hover .right-left-lower-border {
+.mosaic:hover .OverlayFullLower {
     border-right: 1px solid #777;
     border-bottom: 1px solid #777;
     border-left: 1px solid #777;
 }
 
-.right-left-lower-border {
+.OverlayFullLower {
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     border-left: 1px solid #ccc;
 }
 
-.mosaic:hover .right-border {
+.mosaic:hover .OverlayRight {
     border-right: 1px solid #777;
 }
 
-.right-border {
+.OverlayRight {
     border-right: 1px solid #ccc;
 }
 
-.mosaic:hover .lower-right-border {
+.mosaic:hover .OverlayLR {
     border-right: 1px solid #777;
     border-bottom: 1px solid #777;
 }
 
-.lower-right-border {
+.OverlayLR {
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
 
-.mosaic:hover .right-upper-lower-border {
-    border-right: 1px solid #777;
+.mosaic:hover .OverlayFullLeft {
+    border-left: 1px solid #777;
     border-bottom: 1px solid #777;
     border-top: 1px solid #777;
 }
 
-.right-upper-lower-border {
-    border-right: 1px solid #ccc;
+.OverlayFullLeft {
+    border-left: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     border-top: 1px solid #ccc;
 }
 
-.mosaic:hover .lower-border {
+.mosaic:hover .OverlayLower {
     border-bottom: 1px solid #777;
 }
 
-.lower-border {
+.OverlayLower {
     border-bottom: 1px solid #ccc;
 }
 
-.mosaic:hover .lower-left-border {
+.mosaic:hover .OverlayLL {
     border-left: 1px solid #777;
     border-bottom: 1px solid #777;
 }
 
-.lower-left-border {
+.OverlayLL {
     border-left: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
 
-.mosaic:hover .left-border {
+.mosaic:hover .OverlayLeft {
     border-left: 1px solid #777;
 }
 
-.left-border {
+.OverlayLeft {
     border-left: 1px solid #ccc;
+}
+
+.mosaic:hover .OverlayVer {
+    border-left: 1px solid #777;
+    border-right: 1px solid #777;
+}
+
+.OverlayVer {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+.mosaic:hover .OverlayHor {
+    border-top: 1px solid #777;
+    border-bottom: 1px solid #777;
+}
+
+.OverlayHor {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 .selected {
