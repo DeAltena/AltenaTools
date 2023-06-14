@@ -6,8 +6,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet"/>
 
-    <script src="eicons.js"></script>
+    
     <script type="module" src="eicons_firebase.js"></script>
+    <script type="module" src="eicons.js"></script>
     <script src="..\..\Util\text_util.js"></script>
     <script src="..\..\Util\jquery.toast.min.js"></script>
     <link href="..\..\Util\jquery.toast.min.css" rel="stylesheet"/>
@@ -20,12 +21,17 @@
     <meta charset="utf-8">  
     <title>EIcon Gallery</title>
   </head>
-  <body onload="init()">
+  <body>
+    <div class="big centre" id="logindialog" title="Log into an Account!">
+      <input type="text" class="big" id="username" value="" placeholder="Your Username"><br><br>
+      <button class="big" id="login_btn">Log In</button>
+    </div>
+
     <div class="big centre" id="groupdialog" title="Select or enter a new Group!">
       <select class="big" id="groupselect" >
-      </select><br>
+      </select><br><br>
       <input type="text" class="big" id="group_change_name" value="" placeholder="Group Name"><br><br>
-      <button class="big" id="change_group_dialog_btn" onclick="changeGroupCont()">Select Group</button>
+      <button class="big" id="change_group_dialog_btn">Select Group</button>
     </div>
 
     <div class="big centre" id="mosaicdialog" title="Create a Multi-EIcon Mosaic">
@@ -38,91 +44,100 @@
       <br>
       <p>Preview:</p>
       <div class="image" id="mosaicpreview"></div>
-      <button class="big" id="add_mosaic" onclick="addMosaic()">Add Mosaic</button>
+      <button class="big" id="add_mosaic">Add Mosaic</button>
     </div>
 
-    <div class="wrapper centre">
-      <div class="left big">
-        <p class="italic">Click on any Icon to copy it to your clipboard, or shift-click to copy multiple!</p>
-        <p class="italic">Multiple EIcons can be entered, [eicon] tags are stripped automatically.</p><br>
-
-        <label for="eiconname" class="big">EIcon Name:</label>
-        <input type="text" class="big" id="eiconname" name="eiconname" value="" size='32'><br>
-        <label for="eicongroup" class="big">EIcon Group:</label>
-        <input type="text" class="big" id="eicongroup" name="eicongroup" value="Default" size='32'><br>
-        <button class="big" id="addeicon" onclick="addEIcon()">Add EIcon!</button>
-      </div>
-
-      
-      <div class="right big" id="massactions">
-        <p>Mass Actions</p>
-        <span class="italic">You must select images before Mass Actions are available!</span><br><br>
-        <button class="big mass" id="changegroup" onclick="changeGroup()" disabled>Change Group</button><br>
-        <button class="big mass" id="deleteEicons" onclick="deleteEicons()" disabled>Delete EIcons</button><br>
-      </div>
-      <div class="right big">
-        <p>Misc. Actions</p>
-        <span id="info" class="italic"></span><br><br>
-        <button class="big" id="createmosaic" onclick="createMosaic()">Create Multi-EIcon Mosaic</button><br>
-        <button class="big" id="deletemode" title="Clicking on an Image will delete it!" onclick="enableDeleteMode()">Enable Delete Mode</button><br>
-        <button class="big" id="selectmode" onclick="enableSelectMode()">Enable Select Mode</button>
-      </div>
-
+    <div class="big centre" id="username_div">
+      <p class="italic" id="no_user_para">Log in before you can proceed!</p>
+      <button class="big" id="change_user_btn">Log in</button>
+      <button class="big" id="save_btn">Save Data</button>
     </div>
-    
-    <br>
-    <div class="gallery" id="gallery">
-        <!-- 
-        <button type="button" class="collapsible">
-          <div class="deletegroup" onclick="deleteGroup(this, 'default')">❌</div>
-          <div class="renamegroup" onclick="renameGroup(this, 'default')">✏️</div>
-          <p class="big">Default</p>
-        </button>
 
+    <div id="main_div">
+      <div class="wrapper centre">
+        <br>
+        <div class="left big">
+          <p class="italic">Click on any Icon to copy it to your clipboard, or shift-click to copy multiple!</p>
+          <p class="italic">Multiple EIcons can be entered, [eicon] tags are stripped automatically.</p><br>
+  
+          <label for="eiconname" class="big">EIcon Name:</label>
+          <input type="text" class="big" id="eiconname" name="eiconname" value="" size='32'><br>
+          <label for="eicongroup" class="big">EIcon Group:</label>
+          <input type="text" class="big" id="eicongroup" name="eicongroup" value="Default" size='32'><br>
+          <button class="big" id="addeicon">Add EIcon!</button>
+        </div>
+  
         
-        <table class="content" id="default">
-          <tr>
-            <td class="image">
-              <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/test.gif" alt="Failed to load!" width="100" height="100"
-                onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
-              <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
-              <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
-            </td>
-            <td class="image" colspan="2" rowspan="2">
-              <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/grnabs1.gif" alt="Failed to load!"
-                onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
-              <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/grnabs2.gif" alt="Failed to load!"
-                onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');"><br>
-              <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/grnabs3.gif" alt="Failed to load!"
-                onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
-              <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/grnabs4.gif" alt="Failed to load!"
-                onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
-              <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
-              <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
-            </td>
-            <td class="image">
-              <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/test.gif" alt="Failed to load!" width="100" height="100"
-                onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
-              <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
-              <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
-            </td>
-          </tr>
-          <tr>
-            <td class="image">
-              <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/test.gif" alt="Failed to load!" width="100" height="100"
-                onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
-              <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
-              <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
-            </td>
-            <td class="image">
-              <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/test.gif" alt="Failed to load!" width="100" height="100"
-                onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
-              <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
-              <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
-            </td>
-          </tr>
-        </table> -->
-
+        <div class="right big" id="massactions">
+          <p>Mass Actions</p>
+          <span class="italic">You must select images before Mass Actions are available!</span><br><br>
+          <button class="big mass" id="changegroup" disabled>Change Group</button><br>
+          <button class="big mass" id="deleteEicons" disabled>Delete EIcons</button><br>
+        </div>
+        <div class="right big">
+          <p>Misc. Actions</p>
+          <span id="info" class="italic"></span><br><br>
+          <button class="big" id="createmosaic">Create Multi-EIcon Mosaic</button><br>
+          <button class="big" id="deletemode" title="Clicking on an Image will delete it!">Enable Delete Mode</button><br>
+          <button class="big" id="selectmode">Enable Select Mode</button>
+        </div>
+  
+      </div>
+      
+      <br>
+      <div class="gallery" id="gallery">
+          <!-- 
+          <button type="button" class="collapsible">
+            <div class="deletegroup" onclick="deleteGroup(this, 'default')">❌</div>
+            <div class="renamegroup" onclick="renameGroup(this, 'default')">✏️</div>
+            <p class="big">Default</p>
+          </button>
+  
+          
+          <table class="content" id="default">
+            <tr>
+              <td class="image">
+                <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/test.gif" alt="Failed to load!" width="100" height="100"
+                  onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
+                <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
+                <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
+              </td>
+              <td class="image" colspan="2" rowspan="2">
+                <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/grnabs1.gif" alt="Failed to load!"
+                  onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
+                <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/grnabs2.gif" alt="Failed to load!"
+                  onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');"><br>
+                <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/grnabs3.gif" alt="Failed to load!"
+                  onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
+                <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/grnabs4.gif" alt="Failed to load!"
+                  onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
+                <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
+                <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
+              </td>
+              <td class="image">
+                <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/test.gif" alt="Failed to load!" width="100" height="100"
+                  onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
+                <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
+                <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
+              </td>
+            </tr>
+            <tr>
+              <td class="image">
+                <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/test.gif" alt="Failed to load!" width="100" height="100"
+                  onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
+                <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
+                <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
+              </td>
+              <td class="image">
+                <img loading="lazy" title="test" src="https://static.f-list.net/images/eicon/test.gif" alt="Failed to load!" width="100" height="100"
+                  onclick="navigator.clipboard.writeText('[eicon]test[/eicon]');">
+                <div class="delete" onclick="deleteEicon(this, 'test', '{group}')">❌</div>
+                <input type="checkbox" class="select" id="select" title="Select this EIcon" onclick="selectedEicon(this)">
+              </td>
+            </tr>
+          </table> -->
+  
+      </div>
     </div>
 
   </body>

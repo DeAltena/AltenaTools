@@ -65,7 +65,7 @@ function replaceLinebreaks(str){
 }
 
 function isBlank(str) {
-    return (!str || /^\s*$/.test(str));
+    return (!str || str === '' || /^[\s\uFEFF\xA0]+$/.test(str));
 }
 
 function disableOnChecked(id, checkbox){
@@ -137,7 +137,26 @@ function capitalizeWords(string){
 }
 
 function setCookie(cname, cvalue) {
-    document.cookie = cname + "=" + cvalue + ";" + ";path=/ ;SameSite=Lax";
+    var date = new Date();
+    date.setTime(date.getTime() + (356 * 24 * 60 * 60 * 1000));
+
+    var expires = "expires=" + date.toUTCString();
+    var cookie = cname + "=" + cvalue + ";" + expires + ";path=/ ;SameSite=Lax";
+
+  var existingCookies = document.cookie;
+  if (existingCookies) {
+    var cookieArray = existingCookies.split(';');
+    var cookieIndex = cookieArray.findIndex(function (c) {
+      return c.trim().startsWith(cname + "=");
+    });
+    if (cookieIndex !== -1) {
+      cookieArray.splice(cookieIndex, 1);
+    }
+    existingCookies = cookieArray.join(';');
+    document.cookie = existingCookies + ';' + cookie;
+  } else {
+    document.cookie = cookie;
+  }
 }
 
 function getCookie(cname) {
@@ -148,11 +167,11 @@ function getCookie(cname) {
     for(let i = 0; i <ca.length; i++) {
         let c = ca[i];
         while (c.charAt(0) == ' ') {
-        spaces++;
+            spaces++;
         }
         c = c.substring(spaces);
         if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
+            return c.substring(name.length, c.length);
         }
         spaces = 0;
     }

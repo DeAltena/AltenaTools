@@ -1,7 +1,10 @@
+import { setUser, loadUserData, saveUserData } from "./eicons_firebase.js";
+
+
 const src_link_template = "https://static.f-list.net/images/eicon/{name}.gif";
 const clipboard_template = "[eicon]{name}[/eicon]";
 
-const cookie_name = 'eicons';
+const user_cookie_name = 'user_name';
 const protected_class = 'protected';
 const line_break = '[br]';
 
@@ -9,10 +12,11 @@ let eicons = {
 
 };
 
-function init() {
-    $("#groupdialog").hide();
-    $("#mosaicdialog").hide();
+document.addEventListener('DOMContentLoaded', function() {
+    init();
+  });
 
+function init() {
     onCheckbox();
 
     let submit = (event) => {
@@ -26,7 +30,31 @@ function init() {
     document.getElementById("eicongroup").addEventListener("keypress", submit);
 
     initCollapsibles();
+    initButtons();
     loadCookie();
+}
+
+function initButtons(){
+    $("#groupdialog").hide();
+    $("#mosaicdialog").hide();
+    $("#logindialog").hide();
+
+    document.getElementById("change_group_dialog_btn").onclick = changeGroupCont;
+    document.getElementById("add_mosaic").onclick = addMosaic;
+    document.getElementById("addeicon").onclick = addEIcon;
+    document.getElementById("changegroup").onclick = changeGroup;
+    document.getElementById("deleteEicons").onclick = deleteEicons;
+    document.getElementById("createmosaic").onclick = createMosaic;
+    document.getElementById("deletemode").onclick = enableDeleteMode;
+    document.getElementById("selectmode").onclick = enableSelectMode;
+    document.getElementById("change_user_btn").onclick = showLoginDialog;
+    document.getElementById("save_btn").onclick = saveEicons;
+
+    
+    document.getElementById("login_btn").onclick = () => {
+        login(document.getElementById("username").value);
+        $("#logindialog").dialog('close');
+    };
 }
 
 const regexp_tags = /\[eicon\](.+?)\[\/eicon\],?([\r\n]+\s*\S+)?/gm;
@@ -59,8 +87,6 @@ function addEIcon() {
         }
         eicon_group.push(name);
     }
-
-    saveCookie();
 }
 
 function getRowWidth(row) {
@@ -119,7 +145,7 @@ function getEntriesPerRow() {
 }
 
 function getOrCreateGroup(name) {
-    lower_name = name.toLowerCase().trim();
+    let lower_name = name.toLowerCase().trim();
 
     let group_node = document.getElementById(lower_name);
 
@@ -229,8 +255,6 @@ function deleteEicon(node, name, lower_group) {
                 break;
             }
         }
-
-        saveCookie();
     }
 }
 
@@ -240,7 +264,6 @@ function deleteGroup(node, name) {
         let gallery = node.parentNode;
         gallery.removeChild(node.nextElementSibling);
         gallery.removeChild(node);
-        saveCookie();
     }
 }
 
@@ -268,13 +291,11 @@ function renameGroup(node, name) {
         node.nextElementSibling.innerText = group.toUpperCase();
 
         node.parentNode.nextElementSibling.id = group;
-
-        saveCookie();
     }
 }
 
 function getSelectedImages() {
-    checkboxes = document.getElementsByClassName("select");
+    let checkboxes = document.getElementsByClassName("select");
     let selected_images = [];
 
     for (const checkbox of checkboxes) {
@@ -360,7 +381,6 @@ function changeGroupCont() {
         }
         eicon_group.push(image.id);
     }
-    saveCookie();
 }
 
 let delete_mode = false;
@@ -610,11 +630,10 @@ function addMosaic() {
         eicons[group_name.toLowerCase()] = eicon_group
     }
     eicon_group.push(dict_entry);
-    saveCookie();
 }
 
 function loadMosaic(names, group_name) {
-    images = [];
+    let images = [];
     mosaic_width = 0;
     mosaic_height = 1;
     let curr_width = 0;
@@ -671,7 +690,7 @@ function loadMosaic(names, group_name) {
 
     addFunctionality(entry, names, group_name, clipboard_text);
 
-    for (i = 1; i < mosaic_height; i++) {
+    for (let i = 1; i < mosaic_height; i++) {
         if ((last_row = last_row.nextElementSibling) === null) {
             last_row = document.createElement("tr");
             group.appendChild(last_row);
@@ -684,26 +703,13 @@ function loadMosaic(names, group_name) {
 [eicon]slime_dick3[/eicon][eicon]slime_dick4[/eicon]
 */
 
-function saveCookie() {
-    let eicon_string = JSON.stringify(eicons);
-
-    if (new Blob([eicon_string]).size > 4096) {
-        alert("The space needed to save your EIcon gallery has exceeded 4096 bytes!\nThis means it can no longer be stored in a Cookie.\nPlease save it to your harddrive instead!")
-        return;
-    }
-
-    setCookie(cookie_name, eicon_string);
+function saveEicons() {
+    saveUserData(eicons);
 }
 
-function loadCookie() {
-    let tmp = getCookie(cookie_name);
-
-    if (!isBlank(tmp)) {
-        eicons = JSON.parse(tmp);
-    }
-
-    for (const group in eicons) {
-        for (const name of eicons[group]) {
+function loadAll(eiconObj){
+    for (const group in eiconObj) {
+        for (const name of eiconObj[group]) {
             if (name instanceof Array) {
                 loadMosaic(name, group);
             } else {
@@ -711,4 +717,48 @@ function loadCookie() {
             }
         }
     }
+}
+
+function disableButtonsRecursively(element, disabled) {
+    if (element.tagName == 'BUTTON' || element.tagName == 'INPUT') {
+        element.disabled = disabled;
+    }
+
+    var children = element.children;
+    for (var i = 0; i < children.length; i++) {
+        disableButtonsRecursively(children[i], disabled);
+    }
+  }
+
+function login(username){
+    username = username.toLowerCase();
+    const mainDiv = document.getElementById("main_div");
+    const userPara = document.getElementById("no_user_para");
+
+    if (!isBlank(username)) {
+        setUser(username);
+        loadUserData(loadAll);
+        disableButtonsRecursively(mainDiv, false);
+        onCheckbox();
+        userPara.style.display = "none";
+        document.getElementById("change_user_btn").innerText = "Switch User";
+        setCookie(user_cookie_name, username);
+    } else {
+        disableButtonsRecursively(mainDiv, true);
+        onCheckbox();
+        userPara.style.display = "block";
+    }
+}
+
+function showLoginDialog(){
+    $("#logindialog").show();
+    $("#logindialog").dialog({
+        modal: true,
+        width: 'auto'
+    });
+}
+
+function loadCookie() {
+    let user = getCookie(user_cookie_name);
+    login(user);
 }

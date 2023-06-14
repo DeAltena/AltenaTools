@@ -16,6 +16,10 @@ button:disabled {
     background-color: #666;
 }
 
+input:disabled {
+    background-color: #666;
+}
+
 textarea {
     background-color: #191932;
 }
