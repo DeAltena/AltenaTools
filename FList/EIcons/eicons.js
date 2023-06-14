@@ -49,6 +49,7 @@ function initButtons(){
     document.getElementById("selectmode").onclick = enableSelectMode;
     document.getElementById("change_user_btn").onclick = showLoginDialog;
     document.getElementById("save_btn").onclick = saveEicons;
+    document.getElementById("mosaicinput").oninput = mosaicPreview;
 
     
     document.getElementById("login_btn").onclick = () => {
@@ -57,7 +58,7 @@ function initButtons(){
     };
 }
 
-const regexp_tags = /\[eicon\](.+?)\[\/eicon\],?([\r\n]+\s*\S+)?/gm;
+const regexp_tags = /\[?eicon\](.+?)\[\/eicon\],?([\r\n]+\s*\S+?)?/gm;
 const regexp_normal = /([^\[\],]+)\s*,?\s*/gm;
 function addEIcon() {
     let names = []
@@ -246,8 +247,8 @@ function deleteEicon(node, name, lower_group) {
         eicons[lower_group].splice(eicons[lower_group].indexOf(name), 1);
         let row_node = node.parentNode;
         row_node.removeChild(node);
-        for (r = 0; r < rows; r++) {
-            for (c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
                 fillRow(row_node);
             }
             row_node = row_node.nextElementSibling;
@@ -424,10 +425,12 @@ function enableSelectMode() {
 let mosaic_width = -1;
 let mosaic_height = -1;
 
-function mosaicPreview(text) {
+function mosaicPreview() {
     mosaic_width = 0;
     mosaic_height = 1;
     let curr_width = 0;
+
+    let text = document.getElementById("mosaicinput").value;
 
     let images = [];
     let matches = text.matchAll(regexp_tags);
@@ -613,7 +616,7 @@ function addMosaic() {
         entry.appendChild(child);
     }
 
-    for (i = 1; i < mosaic_height; i++) {
+    for (let i = 1; i < mosaic_height; i++) {
         if ((last_row = last_row.nextElementSibling) === null) {
             last_row = document.createElement("tr");
             group.appendChild(last_row);
@@ -708,6 +711,7 @@ function saveEicons() {
 }
 
 function loadAll(eiconObj){
+    eicons = eiconObj;
     for (const group in eiconObj) {
         for (const name of eiconObj[group]) {
             if (name instanceof Array) {
