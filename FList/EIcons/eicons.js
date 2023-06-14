@@ -58,7 +58,7 @@ function initButtons(){
     };
 }
 
-const regexp_tags = /\[?eicon\](.+?)\[\/eicon\],?([\r\n]+\s*\S+?)?/gm;
+const regexp_tags = /\[?eicon\](.+?)\[\/eicon\],?(\s*[\r\n]+\s*\S+?)?/gm;
 const regexp_normal = /([^\[\],]+)\s*,?\s*/gm;
 function addEIcon() {
     let names = []
@@ -92,8 +92,20 @@ function addEIcon() {
 
 function getRowWidth(row) {
     let row_width = 0;
+    //calculate own width
     for (const child of Array.from(row.children)) {
         row_width += child.colSpan;
+    }
+    //calculate inherited width
+    let prev_row = row
+    let depth = 0;
+    while((prev_row = prev_row.previousElementSibling) != null){
+        depth++;
+        for (const child of Array.from(prev_row.children)) {
+            if(child.rowSpan > depth){
+                row_width += child.colSpan;
+            }
+        }
     }
     return row_width;
 }
@@ -230,7 +242,8 @@ function initCollapsibles() {
 let should_confirm = true
 
 function fillRow(row_node) {
-    prev_row = row_node;
+    let prev_row = row_node;
+    let next_row
     while ((next_row = prev_row.nextElementSibling) != null) {
         if (next_row.childElementCount > 0 &&
             getRowWidth(prev_row) <= getEntriesPerRow() - next_row.firstChild.colSpan) {

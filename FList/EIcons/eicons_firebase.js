@@ -44,16 +44,19 @@ export function saveUserData(data) {
 
   set(dataRef, data)
   .then(() => {
+    $.toast('Data stored successfully.');
     console.log('Data stored successfully.');
   })
   .catch((error) => {
+    $.toast('Error storing data!');
     console.error('Error storing data:', error);
   });
 
   return true;
 }
 
-
+//[eicon]sucktarded1[/eicon][eicon]sucktarded2[/eicon]
+//[eicon]sucktarded3[/eicon][eicon]sucktarded4[/eicon]
 
 export function saveTestData(){
   var data = {
