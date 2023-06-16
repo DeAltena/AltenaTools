@@ -154,6 +154,11 @@ textarea {
     display: block;
 }
 
+.placeholder {
+    width: 100px;
+    height: 100px;
+}
+
 .mosaic {
     cursor: pointer;
     position: relative;

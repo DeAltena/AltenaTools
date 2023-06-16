@@ -12,6 +12,10 @@ let eicons = {
 
 };
 
+let tables = {
+
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     init();
   });
@@ -25,6 +29,8 @@ function init() {
             document.getElementById("addeicon").click();
         }
     };
+
+    $("#gallery").css('max-width', `${window.innerWidth - 36}px`);
 
     document.getElementById("eiconname").addEventListener("keypress", submit);
     document.getElementById("eicongroup").addEventListener("keypress", submit);
@@ -90,40 +96,23 @@ function addEIcon() {
     }
 }
 
-function getRowWidth(row) {
-    let row_width = 0;
-    //calculate own width
-    for (const child of Array.from(row.children)) {
-        row_width += child.colSpan;
+function getPreviousSiblings(node) {
+    let count = 0;
+    let sibling = node;
+    while((sibling = sibling.previousElementSibling) != null){
+        count++;
     }
-    //calculate inherited width
-    let prev_row = row
-    let depth = 0;
-    while((prev_row = prev_row.previousElementSibling) != null){
-        depth++;
-        for (const child of Array.from(prev_row.children)) {
-            if(child.rowSpan > depth){
-                row_width += child.colSpan;
-            }
-        }
-    }
-    return row_width;
-}
-
-function getFirstFreeRow(table, width) {
-    for (const row of Array.from(table.children)) {
-        if (getRowWidth(row) <= getEntriesPerRow() - width) {
-            return row;
-        }
-    }
-    let new_row = document.createElement("tr");
-    table.appendChild(new_row);
-    return new_row;
+    return count;
 }
 
 function appendChildToTable(table, child) {
-    let row = getFirstFreeRow(table, 1);
-    row.appendChild(child);
+    const [last_row, next_sibling] = getFirstFreeRow(table, 1, 1);
+    if(next_sibling != null){
+        last_row.insertBefore(child, next_sibling);
+    } else {
+        last_row.appendChild(child);
+    }
+    
 }
 
 function addImage(name, group) {
@@ -201,6 +190,9 @@ function getOrCreateGroup(name) {
     let row_node = document.createElement("tr");
     group_node.appendChild(row_node);
 
+    tables[lower_name] = [];
+    tables[lower_name][0] = new Array(getEntriesPerRow()).fill(0);
+
     collapseEvent(btn);
 
     let gallery = document.getElementById("gallery");
@@ -209,6 +201,7 @@ function getOrCreateGroup(name) {
 
     return group_node
 }
+
 
 function collapseEvent(collapsible) {
     if (collapsible.getAttribute('listener') != null) {
@@ -416,6 +409,8 @@ function enableDeleteMode() {
     }
     $("#deletemode").toggleClass("delete-mode");
     delete_mode = !delete_mode;
+
+    console.log(tables)
 }
 
 let select_mode = false;
@@ -599,15 +594,161 @@ function addFunctionality(entry, identifier, group_name, clipboard_text) {
     entry.appendChild(select);
 }
 
+function getOwnWidth(row) {
+    let row_width = 0;
+    for (const child of Array.from(row.children)) {
+        row_width += child.colSpan;
+    }
+    return row_width;
+}
+
+function getRowWidth(row) {
+    let row_width = getOwnWidth(row);
+    let prev_row = row;
+    let depth = 0;
+    while((prev_row = prev_row.previousElementSibling) != null){
+        depth++;
+        for (const child of Array.from(prev_row.children)) {
+            if(child.rowSpan > depth){
+                row_width += child.colSpan;
+            }
+        }
+    }
+    return row_width;
+}
+
+function addPlaceholders(table, row_ind, count){
+    let row = table.children[row_ind];
+    for(let i = 0; i < count; i++){
+        let placeholder = document.createElement("td");
+        row.appendChild(placeholder);
+        placeholder.classList.add("placeholder");
+
+        for(let j = 0; j < tables[table.id][row_ind].length; j++){
+            if(tables[table.id][row_ind][j] == 0){
+                tables[table.id][row_ind][j] = -1;
+                break;
+            }
+        }
+    }
+}
+
+function removePlaceholders(row, offset, max){
+    for(const cell of Array.from(row.children)){
+        if(cell.classList.contains("placeholder")){
+            if(offset > 0){
+                offset--;
+            } else {
+                let nextSibling = cell.nextElementSibling;
+                row.removeChild(cell);
+                max--;
+                if(max <= 0){
+                    return nextSibling;
+                }
+            }
+        }
+    }
+
+    return null;
+}
+
+function getPreviousPlaceholders(table, row, end_col) {
+    let previous_placeholders = 0;
+
+    for(let c = 0; c < end_col; c++){
+        if(tables[table][row][c] == -1){
+            previous_placeholders++;
+        }
+    }
+
+    return previous_placeholders;
+}
+
+function createNewRow(table){
+    let new_row = document.createElement("tr");
+    table.appendChild(new_row);
+
+    tables[table.id][tables[table.id].length] = new Array(getEntriesPerRow()).fill(0);
+
+    return new_row;
+}
+
+function getFirstFreeRow(table, width, height) {
+    for(let row = 0; row < tables[table.id].length; row++){
+        let free_spaces = 0;
+        for(let col = 0; col < tables[table.id][row].length; col++){
+
+            //Check if a block of the required size is free
+            let fit = true;
+            for(let h = 0; h < height; h++){
+                for(let w = 0; w < width; w++){
+                    if(tables[table.id][row + h] == undefined){
+                        createNewRow(table);
+                    }
+                    if(!(fit = tables[table.id][row + h][col + w] <= 0)){
+                        break;
+                    }
+                }
+                if(!fit){
+                    break;
+                }
+            }
+
+            //block is free - set it to occupied and add/remove placeholders as needed.
+            if(fit){
+                let nextSibling = null;
+                for (let h = 0; h < height; h++) {
+                    const previousPlaceholders = getPreviousPlaceholders(table.id, row + h, col);
+                    if (tables[table.id][row + h][col] === -1) {
+                        const tmp = removePlaceholders(table.children[row + h], previousPlaceholders, width);
+                        nextSibling = h === 0 ? tmp : nextSibling;
+                    }
+                    tables[table.id].slice(row + h, row + h + 1)[0].fill(1, col, col + width);
+                }
+
+                addPlaceholders(table, row, free_spaces);
+                return [table.children[row], nextSibling];
+            }
+
+            if(tables[table.id][row][col] == 0){
+                free_spaces++;
+            }
+        }
+    }
+
+    let new_row = createNewRow(table);
+
+    return [new_row, null];
+
+    /*
+    for (const row of Array.from(table.children)) {
+        if ((cell = getRowWidth(row)) <= getEntriesPerRow() - width) {
+            return [cell, row];
+        }
+    }
+    let new_row = document.createElement("tr");
+    table.appendChild(new_row);
+
+    let lower_name = table.id;
+    tables[lower_name][tables[lower_name].length] = new Array(getEntriesPerRow()).fill(0);
+
+    return [0, new_row];
+    */
+}
+
 function addMosaic() {
     $("#mosaicdialog").dialog("close");
-    let group_name = $("#mosaicgroup").val();
+    let group_name = $("#mosaicgroup").val().toLowerCase();
     let preview = $("#mosaicpreview");
 
     let group = getOrCreateGroup(group_name);
-    let last_row = getFirstFreeRow(group, mosaic_width);
+    let [last_row, next_sibling] = getFirstFreeRow(group, mosaic_width, mosaic_height);
     let entry = createMosaicEntry()
-    last_row.appendChild(entry);
+    if(next_sibling != null){
+        last_row.insertBefore(entry, next_sibling);
+    } else {
+        last_row.appendChild(entry);
+    }
 
     let row = 0;
     let col = 0;
@@ -630,12 +771,7 @@ function addMosaic() {
     }
 
     for (let i = 1; i < mosaic_height; i++) {
-        if ((last_row = last_row.nextElementSibling) === null) {
-            last_row = document.createElement("tr");
-            group.appendChild(last_row);
-        }
         last_row.classList.add(protected_class);
-
     }
 
     addFunctionality(entry, dict_entry, group_name.toLowerCase(), clipboard_text);
@@ -682,9 +818,13 @@ function loadMosaic(names, group_name) {
     }
 
     let group = getOrCreateGroup(group_name);
-    let last_row = getFirstFreeRow(group, mosaic_width);
+    let [last_row, next_sibling] = getFirstFreeRow(group, mosaic_width, mosaic_height);
     let entry = createMosaicEntry();
-    last_row.appendChild(entry);
+    if(next_sibling != null){
+        last_row.insertBefore(entry, next_sibling);
+    } else {
+        last_row.appendChild(entry);
+    }
 
     let row = 0;
     let col = 0;
@@ -709,6 +849,7 @@ function loadMosaic(names, group_name) {
     for (let i = 1; i < mosaic_height; i++) {
         if ((last_row = last_row.nextElementSibling) === null) {
             last_row = document.createElement("tr");
+            tables[group_name][tables[group_name].length] = new Array(getEntriesPerRow()).fill(0);
             group.appendChild(last_row);
         }
         last_row.classList.add(protected_class);
