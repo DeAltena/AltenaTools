@@ -177,3 +177,17 @@ function getCookie(cname) {
     }
     return "";
 }
+
+function toggleClassProperty(className, propertyName, propertyValue) {
+    const styleSheet = document.styleSheets[0];
+  
+    for (let i = 0; i < styleSheet.cssRules.length; i++) {
+      const rule = styleSheet.cssRules[i];
+      if (rule.selectorText === className) {
+        const currentValue = rule.style.getPropertyValue(propertyName);
+        const newValue = (currentValue === propertyValue) ? '' : propertyValue;
+        rule.style.setProperty(propertyName, newValue);
+        break;
+      }
+    }
+  }

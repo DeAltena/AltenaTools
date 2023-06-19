@@ -85,14 +85,14 @@ function addEIcon() {
 
 
     for (const name of names) {
-        addImage(name, group);
-
         let eicon_group = eicons[group.toLowerCase()]
         if (eicon_group === undefined) {
             eicon_group = []
             eicons[group.toLowerCase()] = eicon_group
         }
-        eicon_group.push(name);
+        let index = eicon_group.push(name) - 1;
+
+        addImage(name, group, index);
     }
 }
 
@@ -115,10 +115,10 @@ function appendChildToTable(table, child) {
     
 }
 
-function addImage(name, group) {
+function addImage(name, group, index) {
     let entry = document.createElement("td");
     entry.classList.add("image");
-    entry.id = name.toLowerCase();
+    entry.dataset.index = index;
 
     let img = document.createElement("img");
     img.loading = "lazy";
@@ -127,6 +127,7 @@ function addImage(name, group) {
     img.alt = "Failed to Load!";
     img.width = 100;
     img.height = 100;
+    img.classList.add("OverlayFull");
 
     addFunctionality(entry, name, group.toLowerCase(), clipboard_template.replaceAll("{name}", name));
 
@@ -139,7 +140,7 @@ const entry_width = 104;
 let entries_per_row = -1;
 function getEntriesPerRow() {
     if (entries_per_row <= 0) {
-        let width = window.innerWidth - 36;
+        let width = window.innerWidth - 64;
         entries_per_row = Math.trunc(width / entry_width);
     }
 
@@ -252,7 +253,10 @@ function deleteEicon(node, name, lower_group) {
         let cols = node.colSpan;
         eicons[lower_group].splice(eicons[lower_group].indexOf(name), 1);
         let row_node = node.parentNode;
+        let next_sibling = node.nextElementSibling;
         row_node.removeChild(node);
+
+        /* 
         for (let r = 0; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
                 fillRow(row_node);
@@ -261,7 +265,7 @@ function deleteEicon(node, name, lower_group) {
             if (row_node === null) {
                 break;
             }
-        }
+        }*/
     }
 }
 
@@ -314,6 +318,23 @@ function getSelectedImages() {
     return selected_images;
 }
 
+function getOrderedSelectedImages() {
+    let images = getSelectedImages();
+    images.sort((a, b) => {
+        const indexA = parseInt(a.dataset.index);
+        const indexB = parseInt(b.dataset.index);
+      
+        if (indexA > indexB) {
+          return -1;
+        } else if (indexA < indexB) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    return images;
+}
+
 function deleteEicons() {
     selected_images = getSelectedImages();
 
@@ -344,7 +365,7 @@ function changeGroup() {
         return;
     }
 
-    select = document.getElementById("groupselect");
+    let select = document.getElementById("groupselect");
     for (const group_name in eicons) {
         let opt = document.createElement("option");
         opt.value = group_name;
@@ -361,33 +382,42 @@ function changeGroup() {
 function changeGroupCont() {
     $("#groupdialog").dialog('close');
 
-    let group = $("#group_change_name").val();
-    if (group == null || group.trim() == "") {
-        group = $("#groupselect").find(":selected").val();
+    let new_group = $("#group_change_name").val();
+    if (new_group == null || new_group.trim() == "") {
+        new_group = $("#groupselect").find(":selected").val();
     }
 
-    group = group.trim().toLowerCase();
+    new_group = new_group.trim().toLowerCase();
 
-    let group_node = getOrCreateGroup(group);
+    //let group_node = getOrCreateGroup(group);
 
-    for (const image of getSelectedImages()) {
-        old_row = image.parentNode;
-        old_group = old_row.parentNode.id;
+    let old_groups = new Set();
+    
 
-        appendChildToTable(group_node, image);
-        fillRow(old_row);
+    for (const image of getOrderedSelectedImages()) {
+        let old_row = image.parentNode;
+        let old_group = old_row.parentNode.id;
+        old_groups.add(old_group);
+
+        //appendChildToTable(group_node, image);
+        //fillRow(old_row);
 
         image.querySelector("input").checked = false;
 
-        eicons[old_group].splice(eicons[old_group].indexOf(image.id), 1);
+        let item = eicons[old_group].splice(image.dataset.index, 1)[0];
 
-        let eicon_group = eicons[group];
+        let eicon_group = eicons[new_group];
         if (eicon_group === undefined) {
             eicon_group = [];
-            eicons[group] = eicon_group;
+            eicons[new_group] = eicon_group;
         }
-        eicon_group.push(image.id);
+        eicon_group.push(item);
     }
+
+    for(const old_group of old_groups){
+        reloadGroup(eicons, old_group);
+    }
+    reloadGroup(eicons, new_group);
 }
 
 let delete_mode = false;
@@ -409,8 +439,6 @@ function enableDeleteMode() {
     }
     $("#deletemode").toggleClass("delete-mode");
     delete_mode = !delete_mode;
-
-    console.log(tables)
 }
 
 let select_mode = false;
@@ -425,9 +453,13 @@ function enableSelectMode() {
         if (delete_mode) {
             enableDeleteMode();
         }
+
     }
     $("#selectmode").toggleClass("delete-mode");
     select_mode = !select_mode;
+
+    console.log(tables)
+    console.log(eicons)
 }
 
 let mosaic_width = -1;
@@ -571,6 +603,7 @@ function addFunctionality(entry, identifier, group_name, clipboard_text) {
     let select = document.createElement("input");
     select.type = "checkbox";
     select.classList.add("select");
+    select.classList.add("image-select");
     select.title = "Select this EIcon";
     select.onclick = onCheckbox;
 
@@ -716,7 +749,15 @@ function getFirstFreeRow(table, width, height) {
         }
     }
 
-    let new_row = createNewRow(table);
+    let row = tables[table.id].length;
+    let new_row = null;
+    for (let h = 0; h < height; h++) {
+        let r = createNewRow(table);
+        if(new_row === null){
+            new_row = r;
+        }
+        tables[table.id].slice(row + h, row + h + 1)[0].fill(1, 0, width);
+    }
 
     return [new_row, null];
 
@@ -743,7 +784,7 @@ function addMosaic() {
 
     let group = getOrCreateGroup(group_name);
     let [last_row, next_sibling] = getFirstFreeRow(group, mosaic_width, mosaic_height);
-    let entry = createMosaicEntry()
+    let entry = createMosaicEntry();
     if(next_sibling != null){
         last_row.insertBefore(entry, next_sibling);
     } else {
@@ -781,10 +822,11 @@ function addMosaic() {
         eicon_group = []
         eicons[group_name.toLowerCase()] = eicon_group
     }
-    eicon_group.push(dict_entry);
+    let index = eicon_group.push(dict_entry);
+    entry.dataset.index = index;
 }
 
-function loadMosaic(names, group_name) {
+function loadMosaic(names, group_name, index) {
     let images = [];
     mosaic_width = 0;
     mosaic_height = 1;
@@ -820,6 +862,7 @@ function loadMosaic(names, group_name) {
     let group = getOrCreateGroup(group_name);
     let [last_row, next_sibling] = getFirstFreeRow(group, mosaic_width, mosaic_height);
     let entry = createMosaicEntry();
+    entry.dataset.index = index;
     if(next_sibling != null){
         last_row.insertBefore(entry, next_sibling);
     } else {
@@ -867,13 +910,31 @@ function saveEicons() {
 function loadAll(eiconObj){
     eicons = eiconObj;
     for (const group in eiconObj) {
+        let index = 0;
         for (const name of eiconObj[group]) {
             if (name instanceof Array) {
-                loadMosaic(name, group);
+                loadMosaic(name, group, index);
             } else {
-                addImage(name, group);
+                addImage(name, group, index);
             }
+            index++;
         }
+    }
+}
+
+function reloadGroup(eiconObj, group){
+    group = group.toLowerCase();
+    document.getElementById(group).innerHTML = "";
+    tables[group] = [];
+
+    let index = 0;
+    for(const name of eiconObj[group]){
+        if (name instanceof Array) {
+            loadMosaic(name, group, index);
+        } else {
+            addImage(name, group, index);
+        }
+        index++;
     }
 }
 

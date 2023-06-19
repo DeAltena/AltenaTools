@@ -129,7 +129,6 @@ textarea {
 }
 
 .image {
-    border: 1px solid #ccc;
     cursor: pointer;
     position: relative;
     padding: 0px;
@@ -140,10 +139,6 @@ textarea {
     display: block;
     width: 100px;
     height: 100px;
-}
-  
-.image:hover {
-    border: 1px solid #777;
 }
 
 .image:hover .delete {
