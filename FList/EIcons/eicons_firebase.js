@@ -26,8 +26,9 @@ export function loadUserData(callback) {
   .then((snapshot) => {
     if (snapshot.exists()) {
       const data = snapshot.val();
-      callback(data);
       console.log('Data retrieved successfully:', data);
+
+      callback(data);
     } else {
       console.log('No data available.');
     }

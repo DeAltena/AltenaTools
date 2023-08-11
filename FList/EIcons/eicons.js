@@ -94,6 +94,8 @@ function addEIcon() {
 
         addImage(name, group, index);
     }
+
+    fillPlaceholders();
 }
 
 function getPreviousSiblings(node) {
@@ -290,6 +292,8 @@ function renameGroup(node, name) {
 
         eicons[group] = eicons[name]
         delete eicons[name]
+        tables[group] = tables[name]
+        delete tables[name]
 
         node.onclick = (e) => {
             renameGroup(node, group);
@@ -302,6 +306,7 @@ function renameGroup(node, name) {
         node.nextElementSibling.innerText = group.toUpperCase();
 
         node.parentNode.nextElementSibling.id = group;
+
     }
 }
 
@@ -349,6 +354,8 @@ function deleteEicons() {
         }
         should_confirm = true;
     }
+
+    fillPlaceholders();
 }
 
 function onCheckbox() {
@@ -418,6 +425,8 @@ function changeGroupCont() {
         reloadGroup(eicons, old_group);
     }
     reloadGroup(eicons, new_group);
+
+    fillPlaceholders();
 }
 
 let delete_mode = false;
@@ -597,6 +606,7 @@ function addFunctionality(entry, identifier, group_name, clipboard_text) {
     del.onclick = (e) => {
         deleteEicon(entry, identifier, group_name);
         e.stopPropagation();
+        fillPlaceholders();
     }
     del.innerText = "❌";
 
@@ -666,6 +676,24 @@ function addPlaceholders(table, row_ind, count){
     }
 }
 
+function fillPlaceholders(){
+    for(let table_id in tables){
+        let table_node = document.getElementById(table_id);
+        for(let row_id in tables[table_id]){
+            let empty_count = 0;
+            for(let value_id in tables[table_id][row_id]){
+                if(tables[table_id][row_id][value_id] == 0){
+                    empty_count++;
+                }
+            }
+            if(empty_count > 0){
+                addPlaceholders(table_node, row_id, empty_count);
+            }
+            console.log(table_id, row_id, empty_count, tables[table_id][row_id])
+        }
+    }
+}
+
 function removePlaceholders(row, offset, max){
     for(const cell of Array.from(row.children)){
         if(cell.classList.contains("placeholder")){
@@ -727,6 +755,10 @@ function getFirstFreeRow(table, width, height) {
                 }
             }
 
+            if(tables[table.id][row + height] == undefined){
+                createNewRow(table);
+            }
+
             //block is free - set it to occupied and add/remove placeholders as needed.
             if(fit){
                 let nextSibling = null;
@@ -751,7 +783,7 @@ function getFirstFreeRow(table, width, height) {
 
     let row = tables[table.id].length;
     let new_row = null;
-    for (let h = 0; h < height; h++) {
+    for (let h = 0; h < height + 1; h++) {
         let r = createNewRow(table);
         if(new_row === null){
             new_row = r;
@@ -824,6 +856,9 @@ function addMosaic() {
     }
     let index = eicon_group.push(dict_entry);
     entry.dataset.index = index;
+    
+
+    fillPlaceholders();
 }
 
 function loadMosaic(names, group_name, index) {
@@ -920,6 +955,8 @@ function loadAll(eiconObj){
             index++;
         }
     }
+
+    fillPlaceholders();
 }
 
 function reloadGroup(eiconObj, group){
